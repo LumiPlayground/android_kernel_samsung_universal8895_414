@@ -357,5 +357,45 @@ config SOC_EXYNOS7885_ANDROID_VERSION_R
         help
           This enables support for Android version R of EXYNOS7885
 
+menuconfig EXYNOS_DTBTOOL
+	bool "Build dtbtool for Exynos"
+	depends on SOC_EXYNOS8895
+	select DTC
+	default y
+	help
+	  Say Y here to build the dtbtool for Exynos,
+	  which is necessary to create DTB images for
+	  use in Exynos boot images.
+
+if EXYNOS_DTBTOOL
+
+config EXYNOS_DTBH_PLATFORM_CODE
+	hex "Exynos DTBH hex platform code"
+	default 0x50a6
+	help
+	  This value is verified by the bootloader
+	  to determine if the DTB image is valid for
+	  the device that the kernel is booting on.
+
+config EXYNOS_DTBH_SUBTYPE_CODE
+	hex "Exynos DTBH hex subtype code"
+	default 0x217584da
+	help
+	  This value is verified by the bootloader
+	  to determine if the DTB image is valid for
+	  the device that the kernel is booting on.
+
+config EXYNOS_DTBH_PAGE_SIZE
+	int "Exynos DTBH page size"
+	range 2048 131072
+	default 2048
+	help
+	  Page size used to pad the DTB image.
+	  It should be equal to the page size of
+	  the Exynos boot image.
+	  Must be divisible by 2048.
+
+endif
+
 endmenu
 endmenu
