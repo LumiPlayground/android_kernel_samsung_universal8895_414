@@ -874,192 +874,19 @@
 		hw-rev = <UFS_VER_0004>;
 
 		/* power mode change */
-		ufs,pmd-attr-mode = "FAST";
 		ufs,pmd-attr-lane = /bits/ 8 <2>;
 		ufs,pmd-attr-gear = /bits/ 8 <3>;
-		ufs,pmd-attr-hs-series = "HS_rate_b";
 
 		/* hiberantion */
-		ufs-rx-adv-fine-gran-sup_en = <0>;
 		ufs-rx-min-activate-time-cap = <3>;
 		ufs-rx-hibern8-time-cap = <2>;
 		ufs-tx-hibern8-time-cap = <2>;
 
-		/* misc table */
-		phy-init =
-			<0x9514 0x00 PMD_ALL UNIPRO_DBG_PRD>,		//Unipro Clock Period
-			<0x200 0x40 PMD_ALL PHY_PCS_COMN>,			//OV_TM On
-			<0x12 0x00 PMD_ALL PHY_PCS_RX_PRD>,			//PCS RX Clock Period
-			<0xAA 0x00 PMD_ALL PHY_PCS_TX_PRD>,			//PCS TX Clock Period
-			<0x5C 0x38 PMD_ALL PHY_PCS_RX>,
-			<0x0F 0x0 PMD_ALL PHY_PCS_RX>,
-			<0x65 0x01 PMD_ALL PHY_PCS_RX>,				//PCS RX INT_H8_COUNT_CAP_ENABLE[0] = 1b'1(THIBERN8 CAPABILITY(200us))
-			<0x69 0x01 PMD_ALL PHY_PCS_RX>,
-			<0x21 0x00 PMD_ALL PHY_PCS_RX>,
-			<0x22 0x00 PMD_ALL PHY_PCS_RX>,
-			<0x84 0x01 PMD_ALL PHY_PCS_RX>,
-			<0x04 0x01 PMD_ALL PHY_PCS_TX>,
-			<0x200 0x0 PMD_ALL PHY_PCS_COMN>,			//OV_TM Off
-			<0x9536 0x4E20 PMD_ALL UNIPRO_DBG_MIB>,
-			<0x9564 0x2e820183 PMD_ALL UNIPRO_DBG_MIB>,	//DBG_PA_OPTION_SUITE
-			<0x155E 0x0 PMD_ALL UNIPRO_STD_MIB>,			//LCC disable
+		/* board type for UFS CAL */
+		brd-for-cal = <0>;
 
-			<0x3000 0x0 PMD_ALL UNIPRO_STD_MIB>,			//N_DeviceID
-			<0x3001 0x1 PMD_ALL UNIPRO_STD_MIB>,			//N_DeviceID_valid
-			<0x4021 0x1 PMD_ALL UNIPRO_STD_MIB>,			//T_PeerDeviceID
-
-			<0x4020 0x1 PMD_ALL UNIPRO_STD_MIB>,			//T_ConnectionState
-
-			<0x8C 0x80 PMD_ALL PHY_PMA_COMN>,
-			<0x74 0x10 PMD_ALL PHY_PMA_COMN>,			//CMN_1D(0x74),	PWM clock generation selection: CMN_REG1D(0x10 = Refclk, 0x20 = int OSC)
-			<0x110 0xB5 PMD_ALL PHY_PMA_TRSV>,			//TRSVx_14(0x110/0x250), TRSVx_REG14(RXAFE_DIFN_SQ_PULSE_REJ_EN = 1b'0)
-			<0x134 0x43 PMD_ALL PHY_PMA_TRSV>,			//TRSVx_1D(0x134/0x274),
-			<0x16C 0x20 PMD_ALL PHY_PMA_TRSV>,			//TRSVx_2B(0x16C/0x2AC),
-			<0x178 0xC0 PMD_ALL PHY_PMA_TRSV>,			//TRSVx_2E(0x178/0x2B8),
-			<0xE0 0x12 PMD_ALL PHY_PMA_TRSV>,
-			<0x164 0x58 PMD_ALL PHY_PMA_TRSV>,
-			<0x8C 0xC0 PMD_ALL PHY_PMA_COMN>,
-			<0x8C 0x00 PMD_ALL PHY_PMA_COMN>,
-			<0x00 0xC8 PMD_ALL COMMON_WAIT>,
-			<0 0 0 0>;
-
-		post-phy-init =
-			<0x9529 0x1 PMD_ALL UNIPRO_DBG_MIB>,			//Unipro Debug Mode On
-			<0x15A4 0xFA PMD_ALL UNIPRO_STD_MIB>,		//PA_SaveConfigTime
-			<0x9529 0x0 PMD_ALL UNIPRO_DBG_MIB>,			//Unipro Debug Mode Off
-			<0x200 0x40 PMD_ALL PHY_PCS_COMN>,
-			<0x35 0x05 PMD_ALL PHY_PCS_RX>,
-			<0x73 0x01 PMD_ALL PHY_PCS_RX>,
-			<0x41 0x02 PMD_ALL PHY_PCS_RX>,
-			<0x42 0xAC PMD_ALL PHY_PCS_RX>,
-			<0x200 0x0 PMD_ALL PHY_PCS_COMN>,
-			<0 0 0 0>;
-
-		calib-of-pwm =
-			<0x1569 0x0 PMD_PWM UNIPRO_STD_MIB>,
-			<0x1584 0x0 PMD_PWM UNIPRO_STD_MIB>,
-			<0x2041 8064 PMD_PWM UNIPRO_STD_MIB>,
-			<0x2042 28224 PMD_PWM UNIPRO_STD_MIB>,
-			<0x2043 20160 PMD_PWM UNIPRO_STD_MIB>,
-			<0x15B0 12000 PMD_PWM UNIPRO_STD_MIB>,
-			<0x15B1 32000 PMD_PWM UNIPRO_STD_MIB>,
-			<0x15B2 16000 PMD_PWM UNIPRO_STD_MIB>,
-			<0x7888 8064 PMD_PWM UNIPRO_DBG_APB>,
-			<0x788C 28224 PMD_PWM UNIPRO_DBG_APB>,
-			<0x7890 20160 PMD_PWM UNIPRO_DBG_APB>,
-			<0x78B8 12000 PMD_PWM UNIPRO_DBG_APB>,
-			<0x78BC 32000 PMD_PWM UNIPRO_DBG_APB>,
-			<0x78C0 16000 PMD_PWM UNIPRO_DBG_APB>,
-			/*MPHY tuning value*/
-			<0xC8 0x40 PMD_PWM PHY_PMA_TRSV>,			//TRSVx_02(0xC8/0x208),
-			<0xF0 0x77 PMD_PWM PHY_PMA_TRSV>,			//TRSVx_0c(0xF0/0x230), TX_SLEW_PREEMP_EN_CTRL_EN(bit3) = 1b'0
-			<0x120 0x80 PMD_PWM PHY_PMA_TRSV>,			//TRSVx_18(0x120/0x260), TX_AMPL_CNTR_EN(bit6) = 1b'0
-			<0x128 0x00 PMD_PWM PHY_PMA_TRSV>,			//TRSVx_1a(0x128/0x268), TX_AMPL_CTRL(bit[4:0], Amplitude) = 5b'00000(PWM)
-			<0x12C 0x00 PMD_PWM PHY_PMA_TRSV>,			//TRSVx_1b(0x12C/0x26C), TX_PREEMP_CTRL(bit[5:4]) = 2b'00(0dB)
-			<0x134 0x43 PMD_PWM PHY_PMA_TRSV>,			//TRSVx_1d(0x134/0x274), TX_AUX_CAP_INV_SEL(bit7) = 1b'0, TX_AUX_CAP_CTRL(bit[6:4]) = 3b'100
-			<0 0 0 0>;
-
-		calib-of-hs-rate-a =
-			<0x1569 0x1 PMD_HS UNIPRO_STD_MIB>,
-			<0x1584 0x1 PMD_HS UNIPRO_STD_MIB>,
-
-			<0x2041 8064 PMD_HS UNIPRO_STD_MIB>,
-			<0x2042 28224 PMD_HS UNIPRO_STD_MIB>,
-			<0x2043 20160 PMD_HS UNIPRO_STD_MIB>,
-			<0x15B0 12000 PMD_HS UNIPRO_STD_MIB>,
-			<0x15B1 32000 PMD_HS UNIPRO_STD_MIB>,
-			<0x15B2 16000 PMD_HS UNIPRO_STD_MIB>,
-
-			<0x7888 8064 PMD_HS UNIPRO_DBG_APB>,
-			<0x788C 28224 PMD_HS UNIPRO_DBG_APB>,
-			<0x7890 20160 PMD_HS UNIPRO_DBG_APB>,
-			<0x78B8 12000 PMD_HS UNIPRO_DBG_APB>,
-			<0x78BC 32000 PMD_HS UNIPRO_DBG_APB>,
-			<0x78C0 16000 PMD_HS UNIPRO_DBG_APB>,
-			/*MPHY tuning value*/
-			<0xC8 0xBC PMD_HS PHY_PMA_TRSV>,			//TRSVx_02(0xC8/0x208),
-			<0xF0 0x7F PMD_HS PHY_PMA_TRSV>,			//TRSVx_0c(0xF0/0x230), TX_SLEW_PREEMP_EN_CTRL_EN(bit3) = 1b'1
-			<0x120 0xC0 PMD_HS PHY_PMA_TRSV>,			//TRSVx_18(0x120/0x260), TX_AMPL_CNTR_EN(bit6) = 1b'1
-			<0x128 0x08 PMD_HS_G1_L2 PHY_PMA_TRSV>,			//TRSVx_1a(0x128/0x268), TX_AMPL_CTRL(bit[4:0], Amplitude) = 5b'01000(G1A/B)
-			<0x128 0x02 PMD_HS_G2_L2 PHY_PMA_TRSV>,			//						TX_AMPL_CTRL(bit[4:0], Amplitude) = 5b'00010(G2A/B)
-			<0x128 0x00 PMD_HS_G3_L2 PHY_PMA_TRSV>,			//						TX_AMPL_CTRL(bit[4:0], Amplitude) = 5b'00000(G3A/B)
-			<0x12C 0x00 (PMD_HS_G1_L2|PMD_HS_G3_L2) PHY_PMA_TRSV>,	// TX_PREEMP_CTRL(bit[5:4]) = 2b'00(0dB)
-			<0x12C 0x00 PMD_HS_G2_L2 PHY_PMA_TRSV>,			//						TX_PREEMP_CTRL(bit[5:4]) = 2b'00(0dB, G2A/B))
-			<0x134 0xd3 PMD_HS_G1_L2 PHY_PMA_TRSV>,			//TRSVx_1d(0x134/0x274), TX_AUX_CAP_INV_SEL(bit7) = 1b'1, TX_AUX_CAP_CTRL(bit[6:4]) = 3b'101
-			<0x134 0x73 PMD_HS_G2_L2 PHY_PMA_TRSV>,			//						TX_AUX_CAP_CTRL(bit[6:4]) = 3b'111
-			<0x134 0x63 PMD_HS_G3_L2 PHY_PMA_TRSV>,			//						TX_AUX_CAP_CTRL(bit[6:4]) = 3b'110
-
-			<0x108 0x5D PMD_HS PHY_PMA_TRSV>,			//
-			<0x10C 0x90 PMD_HS PHY_PMA_TRSV>,			//
-			<0 0 0 0>;
-
-		calib-of-hs-rate-b =
-			<0x1569 0x1 PMD_HS UNIPRO_STD_MIB>,
-			<0x1584 0x1 PMD_HS UNIPRO_STD_MIB>,
-
-			<0x2041 8064 PMD_HS UNIPRO_STD_MIB>,
-			<0x2042 28224 PMD_HS UNIPRO_STD_MIB>,
-			<0x2043 20160 PMD_HS UNIPRO_STD_MIB>,
-			<0x15B0 12000 PMD_HS UNIPRO_STD_MIB>,
-			<0x15B1 32000 PMD_HS UNIPRO_STD_MIB>,
-			<0x15B2 16000 PMD_HS UNIPRO_STD_MIB>,
-
-			<0x7888 8064 PMD_HS UNIPRO_DBG_APB>,
-			<0x788C 28224 PMD_HS UNIPRO_DBG_APB>,
-			<0x7890 20160 PMD_HS UNIPRO_DBG_APB>,
-			<0x78B8 12000 PMD_HS UNIPRO_DBG_APB>,
-			<0x78BC 32000 PMD_HS UNIPRO_DBG_APB>,
-			<0x78C0 16000 PMD_HS UNIPRO_DBG_APB>,
-			/*MPHY tuning value*/
-			<0xC8 0xBC PMD_HS PHY_PMA_TRSV>,			//TRSVx_02(0xC8/0x208),
-			<0xF0 0x7F PMD_HS PHY_PMA_TRSV>,			//TRSVx_0c(0xF0/0x230), TX_SLEW_PREEMP_EN_CTRL_EN(bit3) = 1b'1
-			<0x120 0xC0 PMD_HS PHY_PMA_TRSV>,			//TRSVx_18(0x120/0x260), TX_AMPL_CNTR_EN(bit6) = 1b'1
-			<0x128 0x08 PMD_HS_G1_L2 PHY_PMA_TRSV>,			//TRSVx_1a(0x128/0x268), TX_AMPL_CTRL(bit[4:0], Amplitude) = 5b'01000(G1A/B)
-			<0x128 0x02 PMD_HS_G2_L2 PHY_PMA_TRSV>,			//						TX_AMPL_CTRL(bit[4:0], Amplitude) = 5b'00010(G2A/B)
-			<0x128 0x00 PMD_HS_G3_L2 PHY_PMA_TRSV>,			//						TX_AMPL_CTRL(bit[4:0], Amplitude) = 5b'00000(G3A/B)
-			<0x12C 0x00 (PMD_HS_G1_L2|PMD_HS_G3_L2) PHY_PMA_TRSV>,	// TX_PREEMP_CTRL(bit[5:4]) = 2b'00(0dB)
-			<0x12C 0x00 PMD_HS_G2_L2 PHY_PMA_TRSV>,			//						TX_PREEMP_CTRL(bit[5:4]) = 2b'00(0dB, G2A/B))
-			<0x134 0xd3 PMD_HS_G1_L2 PHY_PMA_TRSV>,			//TRSVx_1d(0x134/0x274), TX_AUX_CAP_INV_SEL(bit7) = 1b'1, TX_AUX_CAP_CTRL(bit[6:4]) = 3b'101
-			<0x134 0x73 PMD_HS_G2_L2 PHY_PMA_TRSV>,			//						TX_AUX_CAP_CTRL(bit[6:4]) = 3b'111
-			<0x134 0x63 PMD_HS_G3_L2 PHY_PMA_TRSV>,			//
-
-			<0x108 0x5D PMD_HS PHY_PMA_TRSV>,			//
-			<0x10C 0x90 PMD_HS PHY_PMA_TRSV>,			//
-			<0 0 0 0>;
-
-		post-calib-of-pwm =
-			<0 0 0 0>;
-
-		post-calib-of-hs-rate-a =
-			<0x1fc 0x01 PMD_HS PHY_CDR_WAIT>,
-			<0 0 0 0>;
-
-		post-calib-of-hs-rate-b =
-			<0x1fc 0x01 PMD_HS PHY_CDR_WAIT>,
-			<0 0 0 0>;
-
-		lpa-restore =
-			<0 0 0 0>;
-
-		pre-clk-off =
-			/* SQ off */
-			<0x0C4 0x99 PMD_ALL PHY_PMA_TRSV>,
-			<0x0E8 0x7F PMD_ALL PHY_PMA_TRSV>,
-			<0x004 0x02 PMD_ALL PHY_PMA_COMN>,
-			<0 0 0 0>;
-
-		post-clk-on =
-			/* SQ on */
-			<0x004 0x00 PMD_ALL PHY_PMA_COMN>,
-			<0x0C4 0xD9 PMD_ALL PHY_PMA_TRSV>,
-			<0x0E8 0x77 PMD_ALL PHY_PMA_TRSV>,
-			<0 0 0 0>;
-
-		lane1-sq-off =
-			/* SQ off only for 1lane */
-			<0x0C4 0x19 PMD_ALL PHY_PMA_TRSV_LANE1_SQ_OFF>,
-			<0x0E8 0xFF PMD_ALL PHY_PMA_TRSV_LANE1_SQ_OFF>,
-			<0 0 0 0>;
+		fmp-id = <0>;
+		smu-id = <0>;
 
 		/* ----------------------- */
 		/* 4. ADDITIONAL NODES     */
@@ -1081,10 +908,10 @@
 			#address-cells = <2>;
 			#size-cells = <1>;
 			ranges;
-			
+
 			reg =
 				<0x0 0x11020700 0x4>;
-			
+
 			mask = <(BIT_8 | BIT_9)>;
 			bits = <(BIT_8 | BIT_9)>;
 		};
