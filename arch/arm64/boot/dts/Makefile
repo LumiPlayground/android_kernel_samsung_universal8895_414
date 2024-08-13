@@ -3,6 +3,11 @@ dtbo-y += samsung/exynos7884B-a10eu_jpn_dcm_01.dtbo
 dtbo-y += samsung/exynos7884B-a10eu_jpn_dcm_00.dtbo
 dtb-y += exynos/exynos7885.dtb
 
+dtb-$(CONFIG_SOC_EXYNOS8895) += \
+	exynos/exynos8895-dream2lte_eur_open_10.dtb \
+	exynos/exynos8895-dreamlte_eur_open_10.dtb \
+	exynos/exynos8895-greatlte_eur_open_06.dtb
+
 targets += dtbs
 DTB_LIST  := $(dtb-y) $(dtbo-y)
 always    := $(DTB_LIST)
