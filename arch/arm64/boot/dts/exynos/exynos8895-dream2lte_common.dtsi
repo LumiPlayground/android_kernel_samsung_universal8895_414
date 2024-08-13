@@ -973,6 +973,7 @@
 		dwc3 {
 			dr_mode = "otg";
 			maximum-speed = "super-speed";
+			snps,quirk-frame-length-adjustment = <0x20>;
 		};
 	};
 
@@ -981,8 +982,123 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&phy_port>;
 		phy,gpio_phy_port = <&gpi1 7 0x0>;
-		use_additional_tuning;
+
+		hs_tune_param = <&usb_hs_tune>;
+		ss_tune_param = <&usb_ss_tune>;
 	};
+
+	usb_hs_tune:hs_tune {
+		hs_tune_cnt = <12>;
+
+		/* value = <device host> */
+		hs_tune1 {
+			tune_name = "tx_vref";
+			tune_value = <0xd 0x1>;
+		};
+
+		hs_tune2 {
+			tune_name = "tx_pre_emp";
+			tune_value = <0x3 0x3>;
+		};
+
+		hs_tune3 {
+			tune_name = "tx_pre_emp_plus";
+			tune_value = <0x0 0x0>;
+		};
+
+		hs_tune4 {
+			tune_name = "tx_res";
+			tune_value = <0x3 0x3>;
+		};
+
+		hs_tune5 {
+			tune_name = "tx_rise";
+			tune_value = <0x3 0x3>;
+		};
+
+		hs_tune6 {
+			tune_name = "tx_hsxv";
+			tune_value = <0x3 0x3>;
+		};
+
+		hs_tune7 {
+			tune_name = "tx_fsls";
+			tune_value = <0x3 0x3>;
+		};
+
+		hs_tune8 {
+			tune_name = "rx_sqrx";
+			tune_value = <0x7 0x7>;
+		};
+
+		hs_tune9 {
+			tune_name = "compdis";
+			tune_value = <0x7 0x7>;
+		};
+
+		hs_tune10 {
+			tune_name = "otg";
+			tune_value = <0x2 0x2>;
+		};
+
+		hs_tune11 {
+		/* true : 1, false: 0 */
+		/* <enable_user_imp user_imp_value> */
+			tune_name = "enable_user_imp";
+			tune_value = <0x0 0x0>;
+		};
+
+		hs_tune12 {
+		/* PHY clk : 1 , FREE clk : 0 */
+			tune_name = "is_phyclock";
+			tune_value = <0x1 0x1>;
+		};
+	};
+
+	usb_ss_tune:ss_tune {
+		ss_tune_cnt = <8>;
+
+		ss_tune1 {
+			tune_name = "sstx_deemph";
+			tune_value = <0x7 0x7>;
+		};
+
+		ss_tune2 {
+			tune_name = "sstx_amp";
+			tune_value = <0x0 0x0>;
+		};
+
+		ss_tune3 {
+			tune_name = "ssrx_los";
+			tune_value = <0x4 0x4>;
+		};
+
+		ss_tune4 {
+			tune_name = "ssrx_ctle_peak";
+			tune_value = <0x7 0x7>;
+		};
+
+		ss_tune5 {
+			tune_name = "ssrx_eq_code";
+			tune_value = <0x5 0x5>;
+		};
+
+		ss_tune6 {
+			tune_name = "ssrx_cur_ctrl";
+			tune_value = <0x0 0x0>;
+		};
+
+		ss_tune7 {
+			tune_name = "ssrx_eqen";
+			tune_value = <0x3 0x3>;
+		};
+
+		ss_tune8 {
+			tune_name = "sstx_boost";
+			tune_value = <0x3 0x3>;
+		};
+	};
+
 
 	usb_notifier {
 		compatible = "samsung,usb-notifier";
