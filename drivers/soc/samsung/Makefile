@@ -65,6 +65,9 @@ obj-$(CONFIG_EXYNOS_HDCP2)  += exynos-hdcp/
 # SDM
 obj-$(CONFIG_EXYNOS_SDM) += exynos-sdm.o
 
+# USI
+obj-$(CONFIG_USI) += usi.o
+
 # USI_V2
 obj-$(CONFIG_USI_V2) += usi_v2.o
 
