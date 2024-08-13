@@ -107,6 +107,7 @@ struct exynos_cpufreq_domain {
 extern struct exynos_cpufreq_domain
 		*find_domain_cpumask(const struct cpumask *mask);
 extern struct list_head *get_domain_list(void);
+extern struct exynos_cpufreq_domain *first_domain(void);
 
 /*
  * the time it takes on this CPU to switch between

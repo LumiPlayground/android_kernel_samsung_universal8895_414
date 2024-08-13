@@ -75,12 +75,6 @@ unsigned int get_cpufreq_max_limit(void)
 	return first_domain()->min_freq >> (scale * SCALE_SIZE);
 }
 
-static struct exynos_cpufreq_domain* first_domain(void)
-{
-	return list_first_entry(get_domain_list(),
-			struct exynos_cpufreq_domain, list);
-}
-
 //static inline void ufc_kpp_request(int val)
 //{
 //	kpp_request(STUNE_TOPAPP, &kpp_ta, val);
