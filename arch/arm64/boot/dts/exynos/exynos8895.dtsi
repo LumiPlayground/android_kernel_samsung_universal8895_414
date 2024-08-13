@@ -3130,7 +3130,7 @@
 	};
 
 	udc: usb@10C00000 {
-		compatible = "samsung,exynos8895-dwusb3";
+		compatible = "samsung,exynos-dwusb";
 		clocks = <&clock GATE_USBTV_USB30DRD_LINK>, <&clock USBDRD30>;
 		clock-names = "aclk", "sclk";
 		reg = <0x0 0x10C00000 0x10000>;
@@ -3143,35 +3143,80 @@
 			compatible = "synopsys,dwc3";
 			reg = <0x0 0x10C00000 0x10000>;
 			interrupts = <0 337 0>;
-			is_not_vbus_pad;
-			suspend_clk_freq = <66000000>;
-			enable_sprs_transfer;
+			tx-fifo-resize = <0>;
+			adj-sof-accuracy = <0>;
+			is_not_vbus_pad = <1>;
+			//suspend_clk_freq = <66000000>;
+			enable_sprs_transfer = <1>;
 			phys = <&usbdrd_phy0 0>, <&usbdrd_phy0 1>;
 			phy-names = "usb2-phy", "usb3-phy";
+			/* check susphy support */
+			xhci_l2_support = <1>;
+			/* support usb audio offloading: 1, if not: 0 */
+			usb_audio_offloading = <0>;
+			/* don't support USB L2 sleep */
+			ldos = <0>;
+			/*
+			 * dis-u2-freeclk-exists-quirk, dis_u2_susphy_quirk are alternative.
+			 * One of them should be selected
+			 */
+			snps,dis-u2-freeclk-exists-quirk;
+			/* INT min lock support */
+			usb-pm-qos-int = <400000>;
 		};
 	};
 
 	usbdrd_phy0: phy@10E00000 {
-		compatible = "samsung,exynos8895-usbdrd-phy";
+		compatible = "samsung,exynos-usbdrd-phy";
 		reg = <0x0 0x10E00000 0x100>,
 			<0x0 0x10E10000 0x100>;
 		clocks = <&clock OSCCLK>, <&clock GATE_USBTV_USB30DRD_LINK>;
 		clock-names = "ext_xtal", "aclk";
 		samsung,pmu-syscon = <&pmu_system_controller>;
-		is_not_vbus_pad;
-		status = "disabled";
-		#phy-cells = <1>;
-		#address-cells = <2>;
-		#size-cells = <1>;
-		ranges;
-		change_refclk = <1>;
+		pmu_mask = <0>;
+		pmu_offset = <1836>;
+		pmu_offset_dp = <1796>;
 
-		usbphy-refclk {
-			reg = <0x0 0x10E50070 0x10>;
-			offset = <0xC>;
-			mask = <0x1000000>;
-			value = <0x1000000>;
-		};
+		/* USBDP combo phy version  - 0x200 */
+		phy_version = <0x300>;
+		/* if it doesn't need phy user mux, */
+		/*  you should write "none" */
+		/*  but refclk shouldn't be omitted */
+		phyclk_mux = "none";
+		phy_refclk = "ext_xtal";
+
+		/* if Main phy has the other phy, it must be set to 1. jusf for usbphy_info */
+		has_other_phy = <1>;
+		/* if combo phy is used, it must be set to 1. usbphy_sub_info is enabled */
+		has_combo_phy = <0>;
+		sub_phy_version = <0x300>;
+
+		/* ip type */
+		/* USB3DRD = 0 */
+		/*  USB3HOST = 1 */
+		/*  USB2DRD = 2 */
+		/*  USB2HOST = 3 */
+		ip_type = <0>;
+
+		/* for PHY CAL */
+		/* choice only one item */
+		phy_refsel_clockcore = <1>;
+		phy_refsel_ext_osc = <0>;
+		phy_refsel_xtal = <0>;
+		phy_refsel_diff_pad = <0>;
+		phy_refsel_diff_internal = <0>;
+		phy_refsel_diff_single = <0>;
+
+		/* true : 1 , false : 0 */
+		use_io_for_ovc = <0>;
+		common_block_disable = <1>;
+		is_not_vbus_pad = <1>;
+		used_phy_port = <0>;
+
+		status = "disabled";
+
+		#phy-cells = <1>;
+		ranges;
 	};
 
 	iommu-domain_aud {
