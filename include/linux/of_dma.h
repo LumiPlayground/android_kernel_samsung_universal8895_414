@@ -56,6 +56,9 @@ extern struct dma_chan *of_dma_xlate_by_chan_id(struct of_phandle_args *dma_spec
 
 extern unsigned int of_dma_get_mcode_addr(struct device_node *np);
 extern bool of_dma_secure_mode(struct device_node *np);
+#ifdef CONFIG_SOC_EXYNOS8895
+extern void __iomem *of_dma_get_sel_chan_address(struct device_node *np);
+#endif
 extern void __iomem *of_dma_get_arwrapper_address(struct device_node *np, unsigned int num);
 extern void __iomem *of_dma_get_awwrapper_address(struct device_node *np, unsigned int num);
 extern void __iomem *of_dma_get_instwrapper_address(struct device_node *np);

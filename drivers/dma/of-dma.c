@@ -265,6 +265,26 @@ bool of_dma_secure_mode(struct device_node *np)
 }
 EXPORT_SYMBOL_GPL(of_dma_secure_mode);
 
+#ifdef CONFIG_SOC_EXYNOS8895
+void __iomem *of_dma_get_sel_chan_address(struct device_node *np)
+{
+	const __be32 *reg_list;
+	int ret = 0;
+
+	reg_list = of_get_property(np, "dma-selchan", NULL);
+
+	if (!reg_list)
+		return NULL;
+
+	ret = be32_to_cpup(reg_list);
+	if (!ret)
+		return NULL;
+
+	return ioremap(ret, SZ_32);
+}
+EXPORT_SYMBOL_GPL(of_dma_get_sel_chan_address);
+#endif
+
 /**
  * of_dma_get_arwrapper_address - Get the DMA WAPPER AR address
  * @np:		device node of DMA controller

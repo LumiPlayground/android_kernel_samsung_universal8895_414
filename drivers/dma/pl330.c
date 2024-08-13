@@ -499,6 +499,9 @@ struct pl330_dmac {
 	bool wrapper;
 	/* Notifier block for powermode */
 	struct notifier_block lpa_nb;
+#ifdef CONFIG_SOC_EXYNOS8895
+	void __iomem *dma_sel_chan;
+#endif
 	void __iomem *inst_wrapper;
 	int 			usage_count;
 	/* Populated by the PL330 core driver during pl330_add */
@@ -2216,7 +2219,9 @@ static struct dma_chan *of_dma_pl330_xlate(struct of_phandle_args *dma_spec,
 	int count = dma_spec->args_count;
 	struct pl330_dmac *pl330 = ofdma->of_dma_data;
 	unsigned int chan_id;
-
+#ifdef CONFIG_SOC_EXYNOS8895
+	unsigned int sel_val;
+#endif
 	if (!pl330)
 		return NULL;
 
@@ -2224,6 +2229,19 @@ static struct dma_chan *of_dma_pl330_xlate(struct of_phandle_args *dma_spec,
 		return NULL;
 
 	chan_id = dma_spec->args[0];
+
+#ifdef CONFIG_SOC_EXYNOS8895
+	sel_val = readl(pl330->dma_sel_chan);
+	if (dma_spec->args[1]) {
+		sel_val |= (chan_id == 31)? 0x1 << 8: (chan_id == 30)?
+			0x1 << 4: 0x1 << 0;
+		__raw_writel(sel_val, pl330->dma_sel_chan);
+	} else if (chan_id == 31 || chan_id == 30 || chan_id == 9) {
+		sel_val &= ~((chan_id == 31)? 0x1 << 8: (chan_id == 30)?
+			0x1 << 4: 0x1 << 0);
+		__raw_writel(sel_val, pl330->dma_sel_chan);
+	}
+#endif
 	if (chan_id >= pl330->num_peripherals)
 		return NULL;
 
@@ -3209,6 +3227,10 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 		adev->dev.coherent_dma_mask = of_dma_get_mask(adev->dev.of_node,
 				"coherent-mask-bit");
 		pl330->wrapper = of_dma_get_wrapper_available(adev->dev.of_node);
+#ifdef CONFIG_SOC_EXYNOS8895
+		pl330->dma_sel_chan =
+			of_dma_get_sel_chan_address(adev->dev.of_node);
+#endif
 	}
 
 	pcfg = &pl330->pcfg;
