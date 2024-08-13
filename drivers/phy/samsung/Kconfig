@@ -92,6 +92,20 @@ config PHY_EXYNOS_USBDRD
 	  This driver provides PHY interface for USB 3.0 DRD controller
 	  present on Exynos SoC series.
 
+config PHY_EXYNOS_USBDRD_LEGACY
+	tristate "Exynos SoC series Legacy USB DRD PHY driver"
+	depends on ARCH_EXYNOS && OF
+	depends on HAS_IOMEM
+	depends on USB_DWC3_EXYNOS
+	depends on SOC_EXYNOS8895
+	select GENERIC_PHY
+	select MFD_SYSCON
+	default y
+	help
+	  Enable Legacy USB DRD PHY support for Exynos SoC series.
+	  This driver provides PHY interface for USB 3.0 DRD controller
+	  present on Exynos SoC series.
+
 config PHY_EXYNOS_DEBUGFS
 	tristate "Exynos SoC series USB DRD PHY DebugFS"
 	depends on DEBUG_FS
@@ -116,7 +130,7 @@ config PHY_EXYNOS_DP_DEBUGFS
 
 config PHY_SAMSUNG_USB_CAL
 	bool "Samsung USB PHY CAL"
-	depends on PHY_EXYNOS_USBDRD
+	depends on PHY_EXYNOS_USBDRD || PHY_EXYNOS_USBDRD_LEGACY
 	default y
 	help
 	  Enable this to support CAL (Chip Abstraction Layer)
