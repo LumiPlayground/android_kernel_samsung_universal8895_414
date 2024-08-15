@@ -38,6 +38,13 @@ config EXYNOS8890_BTS_OPTIMIZATION
 	help
 	  Enable BTS (Bus traffic shaper) optimized set
 
+config EXYNOS8895_BTS
+	bool "Bus traffic shaper support"
+	default y
+	depends on SOC_EXYNOS8895
+	help
+	  Enable BTS (Bus traffic shaper) support
+
 config EXYNOS9610_BTS
 	bool "Bus traffic shaper support"
 	default y
