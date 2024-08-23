@@ -151,7 +151,7 @@ int gpu_set_target_clk_vol(int clk, bool pending_is_allowed)
 	ret = gpu_update_cur_level(platform);
 
 /* W/A for BS_G3D_PERFORMANCE misspelling on kernel version 4.4 */
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(4, 9, 0))
+#if defined(CONFIG_SOC_EXYNOS8895)
 #define BS_G3D_PERFORMANCE BS_G3D_PEFORMANCE
 #endif
 
