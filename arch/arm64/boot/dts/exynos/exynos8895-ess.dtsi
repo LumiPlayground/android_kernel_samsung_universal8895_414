@@ -14,7 +14,7 @@
  */
 
 / {
-	exynos-snapshot {
+	debug-snapshot-soc {
 		/* refer from drivers/soc/samsung/cal-if/exynos8895/pmucal_local_exynos8895.h */
 		#define PD_ABOX		(0)
 		#define PD_CAM		(1)
@@ -31,7 +31,9 @@
 		#define PD_VPU		(12)
 		#define PD_VTS		(13)
 
-		compatible = "samsung,exynos-snapshot";
+		compatible = "debug-snapshot-soc";
+		use_multistage_wdt_irq = <265>;
+
 		dump-info@0x0 {
 			sfr-dump-list = "sfr-dump-cmu-peris", "sfr-dump-cmu-abox", "sfr-dump-dram";
 			#address-cells = <1>;
