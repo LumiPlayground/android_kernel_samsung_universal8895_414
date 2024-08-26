@@ -28,7 +28,7 @@
 		};
 
 		seclog_mem {
-			compatible = "exynos8895,seclog";
+			compatible = "exynos,seclog";
 			reg = <0x0 0xC0000000 0x10000>;
 		};
 
