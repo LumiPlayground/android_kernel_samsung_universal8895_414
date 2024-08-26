@@ -3178,6 +3178,7 @@
 		clock-names = "rate_watchdog", "gate_watchdog";
 		timeout-sec = <30>;
 		samsung,syscon-phandle = <&pmu_system_controller>;
+		index = <0>; /* if little cluster then index is 0*/
 	};
 
 	dwmmc_2: dwmmc2@11500000 {
