@@ -15,8 +15,11 @@
 #include "unipro.h"
 #include "mphy.h"
 #include "ufs-exynos.h"
+#ifdef CONFIG_SOC_EXYNOS8895
+#include "ufs-dbg-8895.h"
+#else
 #include "ufs-dbg-9630.h"
-
+#endif
 static void exynos_ufs_get_misc(struct ufs_hba *hba)
 {
 	struct exynos_ufs *ufs = to_exynos_ufs(hba);
