@@ -472,12 +472,13 @@
 	};
 
 	cpufreq {
-		domain@0 {
+		cpufreq_domain0: domain@0 {
 			device_type = "cpufreq-domain";
 			sibling-cpus = "0-3";
 			cal-id = <ACPM_DVFS_CPUCL1>;
 			dm-type = <DM_CPU_CL0>;
 
+			max-freq = <1690000>;
 			min-freq = <455000>;
 
 			/* PM QoS Class ID*/
@@ -485,10 +486,6 @@
 			pm_qos-max-class = <4>;
 
 			user-default-qos = <715000>;
-
-			/* auto calibration value */
-			auto-cal-freq = <1053000>;
-			auto-cal-duration = <400>;	/* ms */
 
 			dm-constraints {
 				mif-perf {
@@ -509,31 +506,28 @@
 						   455000       0
 						   >;
 				};
-				mif-skew {
-					guidance;
-					const-type = <CONSTRAINT_MIN>;
-					dm-type = <DM_MIF>;
-					ect-name = "dvfs_cpucl1";
-				};
+			};
+
+			slack_timer {
+				device_type = "slack-timer-domain";
+				enabled = <0>;          /* Disabled */
 			};
 		};
 
-		domain@1 {
+		cpufreq_domain1: domain@1 {
 			device_type = "cpufreq-domain";
 			sibling-cpus = "4-7";
 			cal-id = <ACPM_DVFS_CPUCL0>;
 			dm-type = <DM_CPU_CL1>;
 
+			max-freq = <2314000>;
 			min-freq = <741000>;
 
 			/* PM QoS Class ID*/
 			pm_qos-min-class = <5>;
 			pm_qos-max-class = <6>;
-			pm_qos-jigbooting = <1469000>;
 
-			/* auto calibration value */
-			auto-cal-freq = <1703000>;
-			auto-cal-duration = <400>;	/* ms */
+			user-default-qos = <858000>;
 
 			dm-constraints {
 				mif-perf {
@@ -559,12 +553,12 @@
 						   858000  421000
 						   741000  421000 >;
 				};
-				mif-skew {
-					guidance;
-					const-type = <CONSTRAINT_MIN>;
-					dm-type = <DM_MIF>;
-					ect-name = "dvfs_cpucl0";
-				};
+			};
+
+			slack_timer {
+				device_type = "slack-timer-domain";
+				enabled = <1>;          /* Enabled */
+				expired_time = <80>;    /* 80ms */
 			};
 		};
 	};
@@ -4627,11 +4621,11 @@
 			cooling-maps {
 				map0 {
 				     trip = <&mngs_alert0>;
-				     cooling-device = <&cpu4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+				     cooling-device = <&cpufreq_domain1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
 				};
 				map1 {
 				     trip = <&mngs_alert1>;
-				     cooling-device = <&cpu4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+				     cooling-device = <&cpufreq_domain1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
 			    };
 			};
 		};
@@ -4689,42 +4683,42 @@
 				map0 {
 				     trip = <&apo_alert0>;
 				     /* Corresponds to 1586MHz at freq_table */
-				     cooling-device = <&cpu0 0 0>;
+				     cooling-device = <&cpufreq_domain0 0 0>;
 				};
 				map1 {
 				     trip = <&apo_alert1>;
 				     /* Corresponds to 1482MHz at freq_table */
-				     cooling-device = <&cpu0 0 0>;
+				     cooling-device = <&cpufreq_domain0 0 0>;
 			       };
 				map2 {
 				     trip = <&apo_alert2>;
 				     /* Corresponds to 1378MHz at freq_table */
-				     cooling-device = <&cpu0 0 0>;
+				     cooling-device = <&cpufreq_domain0 0 0>;
 				};
 				map3 {
 				     trip = <&apo_alert3>;
 				     /* Corresponds to 1170MHz at freq_table */
-				     cooling-device = <&cpu0 0 0>;
+				     cooling-device = <&cpufreq_domain0 0 0>;
 				};
 				map4 {
 				     trip = <&apo_alert4>;
 				     /* Corresponds to 1066MHz at freq_table */
-				     cooling-device = <&cpu0 0 0>;
+				     cooling-device = <&cpufreq_domain0 0 0>;
 				};
 				map5 {
 				     trip = <&apo_alert5>;
 				     /* Corresponds to 442MHz at freq_table */
-				     cooling-device = <&cpu0 0 0>;
+				     cooling-device = <&cpufreq_domain0 0 0>;
 			    };
 				map6 {
 				     trip = <&apo_alert6>;
 				     /* Corresponds to 442MHz at freq_table */
-				     cooling-device = <&cpu0 0 0>;
+				     cooling-device = <&cpufreq_domain0 0 0>;
 				};
 				map7 {
 				     trip = <&apo_hot>;
 				     /* Corresponds to 442MHz at freq_table */
-				     cooling-device = <&cpu0 0 0>;
+				     cooling-device = <&cpufreq_domain0 0 0>;
 				};
 			};
 		};
