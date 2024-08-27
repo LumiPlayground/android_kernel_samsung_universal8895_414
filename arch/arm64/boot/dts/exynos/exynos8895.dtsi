@@ -38,6 +38,9 @@
 			     <0 41 4>,
 			     <0 42 4>,
 			     <0 43 4>;
+		interrupt-affinity = <&cpu0>, <&cpu1>, <&cpu2>,
+					<&cpu3>, <&cpu4>, <&cpu5>,
+					<&cpu6>, <&cpu7>;
 	};
 
 	aliases {
@@ -170,21 +173,21 @@
 			enable-method = "psci";
 			cpu-idle-states = <&BOOTCL_CPU_SLEEP>;
 		};
-		cpu@101 {
+		cpu1: cpu@101 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53", "arm,armv8";
 			reg = <0x0 0x101>;
 			enable-method = "psci";
 			cpu-idle-states = <&BOOTCL_CPU_SLEEP>;
 		};
-		cpu@102 {
+		cpu2: cpu@102 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53", "arm,armv8";
 			reg = <0x0 0x102>;
 			enable-method = "psci";
 			cpu-idle-states = <&BOOTCL_CPU_SLEEP>;
 		};
-		cpu@103 {
+		cpu3: cpu@103 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53", "arm,armv8";
 			reg = <0x0 0x103>;
@@ -198,21 +201,21 @@
 			enable-method = "psci";
 			cpu-idle-states = <&NONBOOTCL_CPU_SLEEP>;
 		};
-		cpu@1 {
+		cpu5: cpu@1 {
 			device_type = "cpu";
 			compatible = "arm,mongoose", "arm,armv8";
 			reg = <0x0 0x1>;
 			enable-method = "psci";
 			cpu-idle-states = <&NONBOOTCL_CPU_SLEEP>;
 		};
-		cpu@2 {
+		cpu6: cpu@2 {
 			device_type = "cpu";
 			compatible = "arm,mongoose", "arm,armv8";
 			reg = <0x0 0x2>;
 			enable-method = "psci";
 			cpu-idle-states = <&NONBOOTCL_CPU_SLEEP>;
 		};
-		cpu@3 {
+		cpu7: cpu@3 {
 			device_type = "cpu";
 			compatible = "arm,mongoose", "arm,armv8";
 			reg = <0x0 0x3>;
