@@ -101,7 +101,6 @@
 		ss_path_swap = <1>;
 	};
 
-
 	s6e3hf3_vkc: s6e3hf3_vkc_ddi {
 		ldi_name = "s6e3hf3";
 		mode = <2>;		/* 0: video mode, 1: DP command mode, 2: MIPI command mode */
@@ -127,7 +126,6 @@
 		op_mode = <1>; /*0:Single Display + Single DSI, 1: Dual Display + Dual DSI, 2 : single Display + Dual DSI*/
 		ss_path_swap = <1>;
 	};
-
 
 	s6e3ha6: s6e3ha6_ddi {
 		ldi_name = "s6e3ha6";
@@ -198,7 +196,6 @@
 		hdr_max_avg_luma = <1200000>;	/* 120 */
 		hdr_min_luma = <5>;				/* 0.0005 */
 	};
-
 
 	s6e3ha6_dream2: s6e3ha6_dream2_ddi {
 		ldi_name = "s6e3ha6";
@@ -326,7 +323,6 @@
 		hdr_min_luma = <5>;				/* 0.0005 */
 	};
 
-
 	s6e3ha2_dual_dsi: s6e3ha2_ddi_dual_dsi {
 		ldi_name = "s6e3ha2";
 		mode = <2>;		/* 0: video mode, 1: DP command mode, 2: MIPI command mode */
@@ -356,6 +352,7 @@
 		op_mode = <2>;
 		ss_path_swap = <0>;
 	};
+
 	panel_spi: spi_gpio {
 		compatible = "spi-gpio";
 		#address-cells = <1>;
