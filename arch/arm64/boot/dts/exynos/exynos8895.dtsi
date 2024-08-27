@@ -38,6 +38,9 @@
 			     <0 41 4>,
 			     <0 42 4>,
 			     <0 43 4>;
+		interrupt-affinity = <&cpu0>, <&cpu1>, <&cpu2>,
+					<&cpu3>, <&cpu4>, <&cpu5>,
+					<&cpu6>, <&cpu7>;
 	};
 
 	aliases {
@@ -188,7 +191,7 @@
 			#cooling-cells = <2>; /* min followed by max */
 			current = <60240 40410 27260 20180 16850 13710 10710 8290 6060>;
 		};
-		cpu@101 {
+		cpu1: cpu@101 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53", "arm,armv8";
 			reg = <0x0 0x101>;
@@ -197,7 +200,7 @@
 			cpu-idle-states = <&BOOTCL_CPU_SLEEP>;
 			current = <60240 40410 27260 20180 16850 13710 10710 8290 6060>;
 		};
-		cpu@102 {
+		cpu2: cpu@102 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53", "arm,armv8";
 			reg = <0x0 0x102>;
@@ -206,7 +209,7 @@
 			cpu-idle-states = <&BOOTCL_CPU_SLEEP>;
 			current = <60240 40410 27260 20180 16850 13710 10710 8290 6060>;
 		};
-		cpu@103 {
+		cpu3: cpu@103 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53", "arm,armv8";
 			reg = <0x0 0x103>;
@@ -225,7 +228,7 @@
 			#cooling-cells = <2>; /* min followed by max */
 			current = <355850 295970 251060 233620 201350 177320 137850 111850 100000 88090 78470 69380 58880>;
 		};
-		cpu@1 {
+		cpu5: cpu@1 {
 			device_type = "cpu";
 			compatible = "arm,mongoose", "arm,armv8";
 			reg = <0x0 0x1>;
@@ -234,7 +237,7 @@
 			cpu-idle-states = <&NONBOOTCL_CPU_SLEEP>;
 			current = <355850 295970 251060 233620 201350 177320 137850 111850 100000 88090 78470 69380 58880>;
 		};
-		cpu@2 {
+		cpu6: cpu@2 {
 			device_type = "cpu";
 			compatible = "arm,mongoose", "arm,armv8";
 			reg = <0x0 0x2>;
@@ -243,7 +246,7 @@
 			cpu-idle-states = <&NONBOOTCL_CPU_SLEEP>;
 			current = <355850 295970 251060 233620 201350 177320 137850 111850 100000 88090 78470 69380 58880>;
 		};
-		cpu@3 {
+		cpu7: cpu@3 {
 			device_type = "cpu";
 			compatible = "arm,mongoose", "arm,armv8";
 			reg = <0x0 0x3>;
