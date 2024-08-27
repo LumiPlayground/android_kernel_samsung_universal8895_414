@@ -26,6 +26,7 @@ obj-$(CONFIG_EXYNOS_RGT)        += exynos-rgt.o
 obj-$(CONFIG_EXYNOS_FLEXPMU_DBG)        += exynos-flexpmu-dbg.o
 
 obj-$(CONFIG_EXYNOS_REBOOT)     += exynos-reboot.o
+obj-$(CONFIG_EXYNOS_REBOOT_8895)     += exynos-reboot_8895.o
 
 # DEBUG
 obj-$(CONFIG_EXYNOS_DEBUG)      += debug/

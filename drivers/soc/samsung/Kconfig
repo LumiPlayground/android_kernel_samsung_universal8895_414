@@ -49,6 +49,10 @@ config EXYNOS_REBOOT
 	bool "Exynos Chip Reboot Driver Support"
 	depends on ARCH_EXYNOS
 
+config EXYNOS_REBOOT_8895
+	bool "Exynos Chip Reboot Driver Support"
+	depends on ARCH_EXYNOS
+
 config EXYNOS_REBOOT_USB_RECOVERY
 	bool "Exynos Chip Recovery USB Booting Support"
 	depends on ARCH_EXYNOS && DEBUG_SNAPSHOT && S3C2410_WATCHDOG
