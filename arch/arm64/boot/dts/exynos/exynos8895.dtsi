@@ -162,21 +162,6 @@
 		#address-cells = <2>;
 		#size-cells = <0>;
 
-		hmp {
-			up_threshold = <524>;
-			down_threshold = <214>;
-			semiboost_up_threshold = <254>;
-			semiboost_down_threshold = <163>;
-			bootboost-duration-us = <40000000>;
-			down_compensation_timeout = <30>;               /* ms */
-			down_compensation_high_freq = <1248000>;        /* min qos lock for little cpu */
-			down_compensation_mid_freq = <1053000>;          /* min qos lock for little cpu */
-			down_compensation_low_freq = <832000>;          /* min qos lock for little cpu */
-			hmp_up_compst_ratio = <512>;
-			hmp_down_compst_ratio = <2048>;
-			little-id = <1>;
-		};
-
 		auto_cpu_mapping {
 			enabled = <1>;
 		};
@@ -425,21 +410,6 @@
 				       <0x0>, 	     <0x0>, 	   <0x0>,        <0x0>;
 				reg-offset = <0x644>;
 			};
-		};
-	};
-
-	schedtune {
-		domain@0 {
-			device_type = "schedtune-freqvar";
-			shared-cpus = "0-3";
-			/* this table works like target_load of interactive parameter */
-			table = < 100 598000 60 715000 30 832000 20 949000 10 1053000 0 >;
-		};
-		domain@1 {
-			device_type = "schedtune-freqvar";
-			shared-cpus = "4-7";
-			/* this table works like target_load of interactive parameter */
-			table = < 20 858000 15 962000 5 1261000 0 >;
 		};
 	};
 
