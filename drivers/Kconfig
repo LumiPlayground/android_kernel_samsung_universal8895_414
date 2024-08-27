@@ -214,6 +214,8 @@ source "drivers/mux/Kconfig"
 
 source "drivers/bts/Kconfig"
 
+source "drivers/bts_legacy/Kconfig"
+
 source "drivers/gud/Kconfig"
 
 source "drivers/ccic/Kconfig"

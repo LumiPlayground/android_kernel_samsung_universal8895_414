@@ -192,6 +192,8 @@ obj-$(CONFIG_MULTIPLEXER)	+= mux/
 
 obj-$(CONFIG_EXYNOS_BTS)	+= bts/
 
+obj-$(CONFIG_EXYNOS_BTS_LEGACY)	+= bts_legacy/
+
 obj-$(CONFIG_TRUSTONIC_TEE)     += gud/
 
 obj-$(CONFIG_USE_CCIC)			+= ccic/
