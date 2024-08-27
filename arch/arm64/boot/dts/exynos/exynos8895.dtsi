@@ -286,11 +286,6 @@
 		cpu_on = <0xC4000003>;
     };
 
-	cpu_hotplug {
-		compatible = "exynos,cpu_hotplug";
-		boot_lock_time = <40>;
-	};
-
 	exynos-pmu {
 		compatible = "samsung,exynos-pmu";
 		samsung,syscon-phandle = <&pmu_system_controller>;
