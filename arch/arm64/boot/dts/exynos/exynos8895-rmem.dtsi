@@ -9,6 +9,8 @@
  * published by the Free Software Foundation.
 */
 
+#include <dt-bindings/soc/samsung/exynos8895-seclog.h>
+
 /memreserve/ 0xE0000000 0x1900000;
 
 / {
@@ -28,8 +30,8 @@
 		};
 
 		seclog_mem {
-			compatible = "exynos8895,seclog";
-			reg = <0x0 0xC0000000 0x10000>;
+			compatible = "exynos,seclog";
+			reg = <0 SECLOG_LOG_BUF_BASE SECLOG_LOG_BUF_TOTAL_SIZE>;
 		};
 
 		camera {
