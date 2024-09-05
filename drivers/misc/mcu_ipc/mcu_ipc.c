@@ -33,6 +33,9 @@ static bool shared_reg_ready = false;
 static signed int shared_reg_usage_cnt = 0;
 int exynos_pmu_shared_reg_enable(void);
 void exynos_pmu_shared_reg_disable(void);
+#else
+int exynos_pmu_shared_reg_enable(void) {return 0;}
+void exynos_pmu_shared_reg_disable(void) {}
 #endif
 
 void mcu_ipc_reg_dump(enum mcu_ipc_region id)
