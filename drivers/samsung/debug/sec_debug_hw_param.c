@@ -342,12 +342,14 @@ static ssize_t sec_hw_param_ap_info_show(struct kobject *kobj,
 	info_size +=
 	    snprintf((char *)(buf + info_size), DATA_SIZE - info_size,
 		     "\"BIN\":\"%c\",", warranty);
+#ifndef CONFIG_SOC_EXYNOS8895
 	info_size +=
 	    snprintf((char *)(buf + info_size), DATA_SIZE - info_size,
 		     "\"ASB\":\"%d\",", id_get_asb_ver());
 	info_size +=
 	    snprintf((char *)(buf + info_size), DATA_SIZE - info_size,
 		     "\"PSITE\":\"%d\",", id_get_product_line());
+#endif
 	info_size +=
 	    snprintf((char *)(buf + info_size), DATA_SIZE - info_size,
 		     "\"LOT_ID\":\"%s\",", lot_id);
