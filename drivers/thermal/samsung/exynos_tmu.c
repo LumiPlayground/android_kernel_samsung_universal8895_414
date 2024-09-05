@@ -1247,10 +1247,8 @@ static int exynos_tmu_set_emulation(void *drv_data, int temp)
 	{ return -EINVAL; }
 #endif /* CONFIG_THERMAL_EMULATION */
 
-#if defined(CONFIG_SOC_EXYNOS9810) || defined(CONFIG_SOC_EXYNOS9610) || defined(CONFIG_SOC_EXYNOS7885)
 static bool cpufreq_limited = false;
 static struct pm_qos_request thermal_cpu_limit_request;
-#endif
 
 static int exynos9810_tmu_read(struct exynos_tmu_data *data)
 {
