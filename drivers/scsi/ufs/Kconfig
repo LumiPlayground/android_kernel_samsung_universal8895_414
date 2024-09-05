@@ -137,9 +137,19 @@ config SCSI_UFS_EXYNOS
 
 	  If unsure, say N.
 
+config SCSI_UFS_EXYNOS_LEGACY
+	tristate "EXYNOS Legacy UFS Host Controller Driver"
+	default y
+	depends on SCSI_UFSHCD && SCSI_UFSHCD_PLATFORM
+	depends on SOC_EXYNOS8895
+	---help---
+	  This enables support for legacy UFS controller on Exynos 8895
+
+	  If unsure, say N.
+
 config SCSI_UFS_EXYNOS_FMP
 	tristate "EXYNOS Flash Memory Protector for UFS Host"
-	depends on SCSI_UFS_EXYNOS
+	depends on SCSI_UFS_EXYNOS || SCSI_UFS_EXYNOS_LEGACY
 	---help---
 	  This selects the EXYNOS UFS FMP Driver.
 

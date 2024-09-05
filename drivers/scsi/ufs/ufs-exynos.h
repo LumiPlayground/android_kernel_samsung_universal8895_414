@@ -465,7 +465,19 @@ struct ufs_phy_cfg {
 
 struct exynos_ufs_phy {
 	void __iomem *reg_pma;
+#ifdef CONFIG_SCSI_UFS_EXYNOS_LEGACY
+	void __iomem *reg_pmu;
+#endif
 };
+
+#ifdef CONFIG_SCSI_UFS_EXYNOS_LEGACY
+#define NUM_OF_SYSREG 2
+struct exynos_ufs_sys {
+	void __iomem *reg_sys[NUM_OF_SYSREG];
+	u32 mask[NUM_OF_SYSREG];
+	u32 bits[NUM_OF_SYSREG];
+};
+#endif
 
 struct exynos_ufs_clk_info {
 	struct list_head list;
@@ -533,6 +545,9 @@ struct exynos_ufs {
 	int num_tx_lanes;
 
 	struct exynos_ufs_phy phy;
+#ifdef CONFIG_SCSI_UFS_EXYNOS_LEGACY
+	struct exynos_ufs_sys sys;
+#endif
 	struct notifier_block tcxo_nb;
 	struct uic_pwr_mode req_pmd_parm;
 	struct uic_pwr_mode act_pmd_parm;
