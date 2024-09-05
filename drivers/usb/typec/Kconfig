@@ -1,0 +1,14 @@
+
+menu "USB Power Delivery and Type-C drivers"
+
+config TYPEC
+	tristate
+	default y
+
+source "drivers/usb/typec/manager/Kconfig"
+
+source "drivers/usb/typec/common/Kconfig"
+
+source "drivers/usb/typec/slsi/Kconfig"
+
+endmenu
