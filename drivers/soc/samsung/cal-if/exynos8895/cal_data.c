@@ -22,3 +22,48 @@
 #include "asv_exynos8895.h"
 
 void (*cal_data_init)(void) = NULL;
+
+#if defined(CONFIG_SEC_FACTORY) || defined(CONFIG_SEC_DEBUG)
+enum ids_info {
+	tg,
+	lg,
+	bg,
+	g3dg,
+	mifg,
+	bids,
+	gids,
+};
+
+int asv_ids_information(enum ids_info id) {
+	int res;
+
+	switch (id) {
+	case tg:
+		res = asv_get_table_ver();
+		break;
+	case lg:
+		res = asv_get_grp(dvfs_cpucl1);
+		break;
+	case bg:
+		res = asv_get_grp(dvfs_cpucl0);
+		break;
+	case g3dg:
+		res = asv_get_grp(dvfs_g3d);
+		break;
+	case mifg:
+		res = asv_get_grp(dvfs_mif);
+		break;
+	case bids:
+		res = asv_get_ids_info(dvfs_cpucl0);
+		break;
+	case gids:
+		res = asv_get_ids_info(dvfs_g3d);
+		break;
+	default:
+		res = 0;
+		break;
+	};
+
+	return res;
+}
+#endif
