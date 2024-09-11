@@ -28,6 +28,318 @@
 	#address-cells = <2>;
 	#size-cells = <1>;
 
+	ems {
+		/* Load Balance Trigger */
+		#define DEFAULT_RATIO	80
+		lbt {
+			pre-overutilized-cpus = "0-3";
+
+			overutil-level0 {
+				cpus =	"0-3",
+					"4-7";
+				ratio =	<30>,
+					<40>;
+			};
+
+			overutil-level1 {
+				cpus = "0-7";
+				ratio = <DEFAULT_RATIO>;
+			};
+		};
+
+		/* FRT Migration */
+		frt {
+			/* little cores */
+			coregroup0 {
+				coverage-ratio = <30>;
+				active-ratio = <25>;
+			};
+			/* big cores */
+			coregroup1 {
+				coverage-ratio = <15>;
+				active-ratio = <5>;
+			};
+		};
+
+		part {
+			/* little cores */
+			coregroup0 {
+				active-ratio-limit = <43>;
+				active-ratio-boost = <42>;
+			};
+			/* big cores */
+			coregroup1 {
+				active-ratio-limit = <30>;
+				active-ratio-boost = <0>;
+			};
+		};
+
+		emstune {
+			mode-map {
+				mode0 {
+					desc = "normal";
+					boost_level = <2>;
+
+					level0 {
+						set = <&set0>;
+					};
+					level1 {
+						set = <&set1>;
+					};
+					level2 {
+						set = <&set2>;
+					};
+				};
+
+				mode1 {
+					desc = "screen-off";
+					boost_level = <2>;
+
+					level0 {
+						set = <&set3>;
+					};
+					level1 {
+						set = <&set3>;
+					};
+					level2 {
+						set = <&set3>;
+					};
+				};
+			};
+
+			set0: set@000 {
+				idx = <0>;
+				desc = "normal default";
+
+				prefer_idle {
+					enabled = <0 0 0 0 0>;
+				};
+
+				weight {
+					root = <400 400 400 400 200 200 33 33>;
+					foreground = <400 400 400 400 200 200 33 33>;
+					background = <400 400 400 400 200 200 33 33>;
+					top-app = <100 100 100 100 80 80 33 33>;
+					rt = <400 400 400 400 200 200 33 33>;
+				};
+
+				idle_weight {
+					root = <500 500 500 500 250 250 41 41>;
+					foreground = <500 500 500 500 250 250 41 41>;
+					background = <500 500 500 500 250 250 41 41>;
+					top-app = <125 125 125 125 100 100 41 41>;
+					rt = <500 500 500 500 250 250 41 41>;
+				};
+				freq_boost {
+					root = <0 0 0 0 0 0 0 0>;
+					foreground = <0 0 0 0 0 0 0 0>;
+					background = <0 0 0 0 0 0 0 0>;
+					top-app = <5 5 5 5 5 5 5 5>;
+					rt = <0 0 0 0 0 0 0 0>;
+				};
+
+				cpus_allowed {
+					target-sched-class = <8>;
+					root = "0-7";
+					foreground = "0-7";
+					background = "0-7";
+					top-app = "0-7";
+					rt = "0-7";
+				};
+
+				esg {
+					step = <0xa 0xc>;
+				};
+
+				ontime {
+					enabled = <1 1 1 1 1>;
+
+					dom_list_u {
+						domain0 {
+							cpus = "0-3";
+							lower-boundary = <0>;
+							upper-boundary = <274>;
+						};
+
+						domain1 {
+							cpus = "4-7";
+							lower-boundary = <214>;
+							upper-boundary = <1024>;
+						};
+					};
+
+					dom_list_s {
+						domain0 {
+							cpus = "0-3";
+							lower-boundary = <0>;
+							upper-boundary = <274>;
+						};
+
+						domain1 {
+							cpus = "4-7";
+							lower-boundary = <214>;
+							upper-boundary = <1024>;
+						};
+					};
+				};
+
+				util_est {
+					enabled = <0 1 0 1 0>;
+				};
+
+				prio_pinning {
+					enabled = <0 0 0 0 0>;
+					mask = "4-7";
+					prio = <110>;
+				};
+
+				init_util {
+					ratio = <25 25 25 25 25>;
+				};
+			};
+
+			set1: set@001 {
+				idx = <1>;
+				desc = "selective boost with NITP";
+
+				prefer_idle {
+					enabled = <0 1 0 1 0>;
+				};
+
+				cpus_allowed {
+					target-sched-class = <8>;
+					root = "0-3";
+					foreground = "0-7";
+					background = "0-1";
+					top-app = "0-7";
+					rt = "0-7";
+				};
+
+				prio_pinning {
+					enabled = <0 0 0 1 0>;
+					mask = "4-7";
+					prio = <110>;
+				};
+			};
+
+			set2: set@002 {
+				idx = <2>;
+				desc = "selective boost with NITP when App launching";
+
+				prefer_idle {
+					enabled = <0 1 0 1 0>;
+				};
+
+				cpus_allowed {
+					target-sched-class = <8>;
+					root = "0-3";
+					foreground = "0-7";
+					background = "0-1";
+					top-app = "0-7";
+					rt = "0-7";
+				};
+
+				prio_pinning {
+					enabled = <0 0 0 1 0>;
+					mask = "4-7";
+					prio = <110>;
+				};
+			};
+
+			set3:set@003 {
+				idx = <3>;
+				desc = "screen-off default";
+
+				prefer_idle {
+					enabled = <0 0 0 0 0>;
+				};
+
+				weight {
+					root = <400 400 400 400 200 200 33 33>;
+					foreground = <400 400 400 400 200 200 33 33>;
+					background = <400 400 400 400 200 200 33 33>;
+					top-app = <100 100 100 100 80 80 33 33>;
+					rt = <400 400 400 400 200 200 33 33>;
+				};
+
+				idle_weight {
+					root = <500 500 500 500 250 250 41 41>;
+					foreground = <500 500 500 500 250 250 41 41>;
+					background = <500 500 500 500 250 250 41 41>;
+					top-app = <125 125 125 125 100 100 41 41>;
+					rt = <500 500 500 500 250 250 41 41>;
+				};
+
+				freq_boost {
+					root = <0 0 0 0 0 0 0 0>;
+					foreground = <0 0 0 0 0 0 0 0>;
+					background = <0 0 0 0 0 0 0 0>;
+					top-app = <0 0 0 0 0 0 0 0>;
+					rt = <0 0 0 0 0 0 0 0>;
+				};
+
+				cpus_allowed {
+					target-sched-class = <8>;
+					root = "0-7";
+					foreground = "0-7";
+					background = "0-7";
+					top-app = "0-7";
+					rt = "0-7";
+				};
+
+				esg {
+					step = <0xa 0xc>;
+				};
+
+				ontime {
+					enabled = <1 1 1 1 1>;
+
+					dom_list_u {
+						domain0 {
+							cpus = "0-3";
+							lower-boundary = <0>;
+							upper-boundary = <274>;
+						};
+
+						domain1 {
+							cpus = "4-7";
+							lower-boundary = <214>;
+							upper-boundary = <1024>;
+						};
+					};
+
+					dom_list_s {
+						domain0 {
+							cpus = "0-3";
+							lower-boundary = <0>;
+							upper-boundary = <274>;
+						};
+
+						domain1 {
+							cpus = "4-7";
+							lower-boundary = <214>;
+							upper-boundary = <1024>;
+						};
+					};
+				};
+
+				util_est {
+					enabled = <0 1 0 1 0>;
+				};
+
+				prio_pinning {
+					enabled = <0 0 0 0 0>;
+					mask = "4-7";
+					prio = <110>;
+				};
+
+				init_util {
+					ratio = <25 25 25 25 25>;
+				};
+			};
+		};
+	};
+
 	arm-pmu {
 		compatible = "arm,armv8-pmuv3";
 		interrupts = <0 24 4>,
