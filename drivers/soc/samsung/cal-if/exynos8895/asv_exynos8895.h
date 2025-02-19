@@ -162,6 +162,16 @@ int id_get_rev(void)
 	return rev;
 }
 
+int id_get_product_line(void)
+{
+	return 0;
+}
+
+int id_get_asb_ver(void)
+{
+	return 0;
+}
+
 int asv_table_init(void)
 {
 	asv_tbl = ioremap(ASV_TABLE_BASE, SZ_4K);
