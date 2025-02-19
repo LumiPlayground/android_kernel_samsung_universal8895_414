@@ -1,0 +1,8 @@
+{
+	"name": "Ubuntu",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"args": { "VARIANT": "jammy" }
+	},
+	"remoteUser": "vscode"
+}
