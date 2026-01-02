@@ -943,6 +943,12 @@
 		/* Alive block sfr for TCXO control */
 		samsung,pmu-phandle = <&pmu_system_controller>;
 
+	     /* TCXO exclusive control  */
+	     tcxo-ex-ctrl = <0>;
+
+	     /* UFS IO coherency  */
+	     samsung,sysreg-fsys-phandle = <&sysreg_fsys0_controller>;
+
 		/* ----------------------- */
 		/* 2. UFS COMMON           */
 		/* ----------------------- */
@@ -985,35 +991,17 @@
 			#size-cells = <1>;
 			ranges;
 			reg = <0x0 0x11124000 0x800>;
-
-			ufs-phy-sys {
-				reg = <0x0 0x16480724 0x4>;
-			};
 		};
 
 		/* SYSREG */
-		ufs-io-coherency {
+		ufs-dma-coherency {
 			#address-cells = <2>;
 			#size-cells = <1>;
 			ranges;
 
-			reg =
-				<0x0 0x11020700 0x4>;
-
+			offset = <0x700>;
 			mask = <(BIT_8 | BIT_9)>;
 			bits = <(BIT_8 | BIT_9)>;
-		};
-
-		ufs-tcxo-sel {
-			#address-cells = <2>;
-			#size-cells = <1>;
-			ranges;
-
-			reg =
-				<0x0 0x11021150 0x4>;
-
-			mask = <BIT_0>;
-			bits = <BIT_0>;			// use alternative
 		};
 	};
 
