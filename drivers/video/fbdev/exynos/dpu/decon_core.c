@@ -511,7 +511,7 @@ int decon_tui_protection(bool tui_en)
 		mutex_lock(&decon->lock);
 		decon_hiber_block_exit(decon);
 
-		flush_kthread_worker(&decon->up.worker);
+		kthread_flush_worker(&decon->up.worker);
 
 		decon_wait_for_vsync(decon, VSYNC_TIMEOUT_MSEC);
 #ifdef CONFIG_FB_WINDOW_UPDATE
@@ -770,7 +770,7 @@ static int decon_disable(struct decon_device *decon)
 
 	decon_dbg("disable decon-%d\n", decon->id);
 
-	flush_kthread_worker(&decon->up.worker);
+	kthread_flush_worker(&decon->up.worker);
 
 	decon_to_psr_info(decon, &psr);
 	decon_reg_set_int(decon->id, &psr, 0);
@@ -874,7 +874,7 @@ static int decon_dp_disable(struct decon_device *decon)
 		goto err;
 	}
 
-	flush_kthread_worker(&decon->up.worker);
+	kthread_flush_worker(&decon->up.worker);
 
 	decon_to_psr_info(decon, &psr);
 	ret = decon_reg_stop(decon->id, decon->dt.out_idx[0], &psr);
@@ -1011,12 +1011,12 @@ int decon_wait_for_vsync(struct decon_device *decon, u32 timeout)
 
 	if (timeout) {
 		ret = wait_event_interruptible_timeout(decon->vsync.wait,
-				!decon_ktime_equal(timestamp,
+				!decon_decon_ktime_equal(timestamp,
 						decon->vsync.timestamp),
 				msecs_to_jiffies(timeout));
 	} else {
 		ret = wait_event_interruptible(decon->vsync.wait,
-				!decon_ktime_equal(timestamp,
+				!decon_decon_ktime_equal(timestamp,
 						decon->vsync.timestamp));
 	}
 
@@ -2748,7 +2748,7 @@ static int decon_set_win_config(struct decon_device *decon,
 	list_add_tail(&regs->list, &decon->up.list);
 	decon->update_regs_list_cnt++;
 	mutex_unlock(&decon->up.lock);
-	queue_kthread_work(&decon->up.worker, &decon->up.work);
+	kthread_queue_work(&decon->up.worker, &decon->up.work);
 
 	mutex_unlock(&decon->lock);
 
@@ -2865,7 +2865,7 @@ int decon_set_doze_suspend(struct decon_device *decon)
 	mutex_lock(&decon->lock);
 
 	DPU_EVENT_LOG(DPU_EVT_DOZE_SUSPEND, &decon->sd, ktime_set(0, 0));
-	flush_kthread_worker(&decon->up.worker);
+	kthread_flush_worker(&decon->up.worker);
 
 	if (decon->state == DECON_STATE_OFF) {
 		ret = v4l2_subdev_call(decon->out_sd[0], core, ioctl,
@@ -3914,7 +3914,7 @@ static int decon_create_update_thread(struct decon_device *decon, char *name)
 	INIT_LIST_HEAD(&decon->up.list);
 	INIT_LIST_HEAD(&decon->up.saved_list);
 	decon->up_list_saved = false;
-	init_kthread_worker(&decon->up.worker);
+	kthread_init_worker(&decon->up.worker);
 	decon->up.thread = kthread_run(kthread_worker_fn,
 			&decon->up.worker, name);
 	if (IS_ERR(decon->up.thread)) {
@@ -3922,7 +3922,7 @@ static int decon_create_update_thread(struct decon_device *decon, char *name)
 		decon_err("failed to run update_regs thread\n");
 		return PTR_ERR(decon->up.thread);
 	}
-	init_kthread_work(&decon->up.work, decon_update_regs_handler);
+	kthread_init_work(&decon->up.work, decon_update_regs_handler);
 
 	return 0;
 }

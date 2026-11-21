@@ -317,12 +317,12 @@ static int decon_reset_panel(void *data, int (*check_condition)(void))
 	mutex_lock(&decon->lock);
 
 wait_list_empty:
-	flush_kthread_worker(&decon->up.worker);
+	kthread_flush_worker(&decon->up.worker);
 	//wait current .. 
 	usleep_range(17000, 17000);
 
 	if (decon->update_regs_list_cnt) {
-		queue_kthread_work(&decon->up.worker, &decon->up.work);
+		kthread_queue_work(&decon->up.worker, &decon->up.work);
 		goto wait_list_empty;
 	}
 
@@ -592,7 +592,7 @@ static int decon_vsync_thread(void *data)
 	while (!kthread_should_stop()) {
 		ktime_t timestamp = decon->vsync.timestamp;
 		int ret = wait_event_interruptible(decon->vsync.wait,
-			!ktime_equal(timestamp, decon->vsync.timestamp) &&
+			!decon_ktime_equal(timestamp, decon->vsync.timestamp) &&
 			decon->vsync.active);
 
 		if (!ret)
@@ -1130,7 +1130,7 @@ int decon_enter_hiber(struct decon_device *decon)
 
 	decon_hiber_trig_reset(decon);
 
-	flush_kthread_worker(&decon->up.worker);
+	kthread_flush_worker(&decon->up.worker);
 
 	decon_to_psr_info(decon, &psr);
 	decon_reg_set_int(decon->id, &psr, 0);
@@ -1257,7 +1257,7 @@ static int decon_fsync_thread(void *data)
 	while (!kthread_should_stop()) {
 		timestamp = decon->fsync.timestamp;
 		ret = wait_event_interruptible(decon->fsync.wait,
-			!ktime_equal(timestamp, decon->fsync.timestamp) &&
+			!decon_ktime_equal(timestamp, decon->fsync.timestamp) &&
 			decon->fsync.active);
 
 		if (!ret) {
