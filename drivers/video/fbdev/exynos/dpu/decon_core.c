@@ -42,7 +42,7 @@
 #include "decon.h"
 #include "dsim.h"
 
-#include "../../../../staging/android/sw_sync.h"
+#include "sync_compat.h"
 #include "dpp.h"
 #include "displayport.h"
 
@@ -656,7 +656,7 @@ static int decon_enable(struct decon_device *decon)
 #endif
 	if (decon->dt.out_type == DECON_OUT_DP) {
 		decon_info("DECON_OUT_DP %s timeline:%d, max:%d\n",
-			decon->timeline->obj.name, decon->timeline->value, decon->timeline_max);
+			decon->timeline->name, decon->timeline->value, decon->timeline_max);
 
 		decon_reg_set_dispif_sync_pol(decon->id, videoformat_parameters[g_displayport_videoformat].h_sync_pol ? 0 : 1,
 				videoformat_parameters[g_displayport_videoformat].v_sync_pol ? 0 : 1);
@@ -826,7 +826,7 @@ static int decon_disable(struct decon_device *decon)
 			decon_err("displayport stopping stream failed\n");
 		}
 		decon_info("DECON_OUT_DP %s timeline:%d, max:%d\n",
-			decon->timeline->obj.name, decon->timeline->value, decon->timeline_max);
+			decon->timeline->name, decon->timeline->value, decon->timeline_max);
 
 		decon->bts.ops->bts_update_qos_mif(decon, 0);
 		decon->bts.ops->bts_update_qos_int(decon, 0);

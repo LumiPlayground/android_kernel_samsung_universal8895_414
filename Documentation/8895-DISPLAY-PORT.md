@@ -18,3 +18,10 @@ First compile probe found missing legacy switch.h plus disabled panel dimming.
 Restore the original generic Android switch-class implementation from the
 pinned 4.4 tree for vendor switch sysfs/uevent compatibility, and select the
 panel's actual AID dimming implementation. No empty switch/fence stubs are added.
+
+The next migration replaces removed sync_fence/sw_sync callers with a local
+adapter backed by 4.14 dma_fence and sync_file. Waits retain real timeouts and
+error propagation, fd installation transfers the file reference, and the
+existing 4.14 timeline implementation supplies actual signaling. Event logs
+store a sequence number instead of an unowned sync-point pointer. These changes
+still need compile, full link, runtime synchronization and memory-lifetime tests.

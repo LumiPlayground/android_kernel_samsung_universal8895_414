@@ -341,18 +341,18 @@ void DPU_EVENT_LOG_FENCE(struct v4l2_subdev *sd, struct decon_reg_data *regs, dp
 		if (fence) {
 #if defined(CONFIG_SAMSUNG_PRODUCT_SHIP)
 			snprintf(&log->data.fence.acquire_fence[win][0], ACQUIRE_FENCE_LEN, "%pK:%s:%d",
-				fence, fence->name, sync_status_str(atomic_read(&fence->status)));
+				fence, fence->user_name, sync_status_str(dma_fence_get_status(fence->fence)));
 #else
 			snprintf(&log->data.fence.acquire_fence[win][0], ACQUIRE_FENCE_LEN, "%p:%s:%d",
-				fence, fence->name, sync_status_str(atomic_read(&fence->status)));
+				fence, fence->user_name, sync_status_str(dma_fence_get_status(fence->fence)));
 #endif
 		}
 	}
 
 	log->data.fence.release_fence[0] = '\0';
-	if (regs->pt) {
+	if (regs->fence_seqno) {
 		snprintf(&log->data.fence.release_fence[0], RELEASE_FENCE_LEN, "decon%d_pt:%d/%d",
-			decon->id, ((struct sw_sync_pt *)(regs->pt))->value, decon->timeline->value);
+			decon->id, regs->fence_seqno, decon->timeline->value);
 	}
 
 	log->data.fence.timeline_value = decon->timeline->value;

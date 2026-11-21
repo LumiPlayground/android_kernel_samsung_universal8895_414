@@ -45,7 +45,7 @@ static irqreturn_t decon_displayport_irq_handler(int irq, void *dev_data)
 
 	if (irq_sts_reg & DPU_UNDER_FLOW_INT_PEND) {
 		decon_dbg("decon%d underrun %s timeline:%d, max:%d\n",
-			decon->id, decon->timeline->obj.name, decon->timeline->value, decon->timeline_max);
+			decon->id, decon->timeline->name, decon->timeline->value, decon->timeline_max);
 		decon_displayport_underrun_info();
 		DPU_EVENT_LOG(DPU_EVT_UNDERRUN, &decon->sd, ktime_set(0, 0));
 	}
@@ -60,7 +60,7 @@ static irqreturn_t decon_displayport_irq_handler(int irq, void *dev_data)
 			wake_up_interruptible_all(&decon->vsync.wait);
 		}
 		decon_dbg("decon%d vsync %s timeline:%d, max:%d\n",
-			decon->id, decon->timeline->obj.name, decon->timeline->value, decon->timeline_max);
+			decon->id, decon->timeline->name, decon->timeline->value, decon->timeline_max);
 	}
 
 	if (irq_sts_reg & DPU_FRAME_DONE_INT_PEND) {

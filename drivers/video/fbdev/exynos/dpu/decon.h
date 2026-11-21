@@ -35,7 +35,7 @@
 #include "decon_lcd.h"
 #include "dsim.h"
 #include "displayport.h"
-#include "../../../../staging/android/sw_sync.h"
+#include "sync_compat.h"
 #include "../panel/panel_drv.h"
 #ifdef CONFIG_DISPLAY_USE_INFO
 #include "../panel/dpui.h"
@@ -759,7 +759,7 @@ struct decon_reg_data {
 	/* protected contents playback */
 	bool protection[MAX_DECON_WIN + 1];
 	/* release fence*/
-	struct sync_pt *pt;
+	u32 fence_seqno;
 #ifdef CONFIG_SUPPORT_DSU
 	struct dsu_info dsu;
 #endif

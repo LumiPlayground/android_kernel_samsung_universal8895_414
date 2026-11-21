@@ -359,7 +359,7 @@ int decon_create_fence(struct decon_device *decon,
 	}
 
 	if (regs)
-		regs->pt = pt;
+		regs->fence_seqno = pt->base.seqno;
 
 	fd = get_unused_fd_flags(0);
 	if (fd < 0) {
@@ -472,24 +472,24 @@ void decon_fence_err_log(struct decon_device *decon, int idx, struct sync_fence 
 	int err_idx;
 	int namelen;
 
-	namelen = strlen(fence->name);
+	namelen = strlen(fence->user_name);
 	if (namelen > FENCE_NAME_STR_MAX)
 		namelen = FENCE_NAME_STR_MAX;
 
 	if (decon->fence_err_cnt == 0) {
 		decon->first_fence_err.win_id = idx;
 		decon->first_fence_err.time = ktime_get();
-		decon->first_fence_err.status = atomic_read(&fence->status);
+		decon->first_fence_err.status = dma_fence_get_status(fence->fence);
 		memset(decon->first_fence_err.name, 0, FENCE_NAME_MAX);
-		strncpy(decon->first_fence_err.name, fence->name, namelen);
+		strncpy(decon->first_fence_err.name, fence->user_name, namelen);
 	}
 
 	err_idx = decon->fence_err_cnt % FENCE_ERR_LIST_CNT;
 	decon->fence_err_list[err_idx].win_id = idx;
 	decon->fence_err_list[err_idx].time = ktime_get();
-	decon->fence_err_list[err_idx].status = atomic_read(&fence->status);
+	decon->fence_err_list[err_idx].status = dma_fence_get_status(fence->fence);
 	memset(decon->fence_err_list[err_idx].name, 0, FENCE_NAME_MAX);
-	strncpy(decon->fence_err_list[err_idx].name, fence->name, namelen);
+	strncpy(decon->fence_err_list[err_idx].name, fence->user_name, namelen);
 
 	decon->fence_err_cnt += 1;
 
@@ -502,7 +502,7 @@ int decon_wait_fence(struct sync_fence *fence)
 	int err = 0;
 
 	snprintf(acquire_fence_log, ACQUIRE_FENCE_LEN, "%p:%s:%d",
-			fence, fence->name, atomic_read(&fence->status));
+			fence, fence->user_name, dma_fence_get_status(fence->fence));
 	err = sync_fence_wait(fence, 900);
 	if (err < 0)
 		decon_warn("%s: error waiting on acquire fence: %d\n", acquire_fence_log, err);

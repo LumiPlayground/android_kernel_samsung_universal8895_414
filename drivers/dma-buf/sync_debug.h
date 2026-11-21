@@ -66,6 +66,11 @@ struct sync_pt {
 
 extern const struct file_operations sw_sync_debugfs_fops;
 
+/* In-kernel display timelines use the same dma-fence implementation. */
+struct sync_timeline *sync_timeline_create(const char *name);
+void sync_timeline_signal(struct sync_timeline *obj, unsigned int inc);
+struct sync_pt *sync_pt_create(struct sync_timeline *obj, unsigned int value);
+
 void sync_timeline_debug_add(struct sync_timeline *obj);
 void sync_timeline_debug_remove(struct sync_timeline *obj);
 void sync_file_debug_add(struct sync_file *fence);
