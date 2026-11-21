@@ -21,6 +21,7 @@ jobs:
           git rev-parse HEAD > artifacts/source-commit.txt
           make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- exynos8895_android17_defconfig 2>&1 | tee artifacts/config.log
           cp out/.config artifacts/kernel.config
+          python3 scripts/8895-check-android-config.py out/.config | tee artifacts/config-checks.json
           make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- HOSTCFLAGS='-O2 -fcommon' KCFLAGS='-Wno-error' -j2 Image dtbs 2>&1 | tee artifacts/build.log
           cp out/arch/arm64/boot/Image artifacts/
           find out/arch/arm64/boot/dts/exynos -name 'exynos8895-*eur_open*.dtb' -exec cp {} artifacts/ \;
