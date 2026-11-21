@@ -1011,12 +1011,12 @@ int decon_wait_for_vsync(struct decon_device *decon, u32 timeout)
 
 	if (timeout) {
 		ret = wait_event_interruptible_timeout(decon->vsync.wait,
-				!ktime_equal(timestamp,
+				!decon_ktime_equal(timestamp,
 						decon->vsync.timestamp),
 				msecs_to_jiffies(timeout));
 	} else {
 		ret = wait_event_interruptible(decon->vsync.wait,
-				!ktime_equal(timestamp,
+				!decon_ktime_equal(timestamp,
 						decon->vsync.timestamp));
 	}
 

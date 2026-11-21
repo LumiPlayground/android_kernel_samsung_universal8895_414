@@ -63,8 +63,4 @@ static inline int sync_fence_wait(struct sync_file *file, unsigned int timeout_m
     return ret < 0 ? ret : 0;
 }
 
-static inline const char *sync_status_str(int status)
-{
-    return status < 0 ? "error" : status ? "signaled" : "active";
-}
 #endif

@@ -45,6 +45,11 @@
 #define MAX_DECON_CNT		3
 #define SUCCESS_EXYNOS_SMC	0
 
+static inline bool decon_ktime_equal(ktime_t a, ktime_t b)
+{
+	return ktime_compare(a, b) == 0;
+}
+
 extern struct ion_device *ion_exynos;
 extern struct decon_device *decon_drvdata[MAX_DECON_CNT];
 extern int decon_log_level;

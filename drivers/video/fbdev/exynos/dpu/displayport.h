@@ -20,6 +20,7 @@
 #include <media/v4l2-subdev.h>
 #include <linux/switch.h>
 #include <linux/wakelock.h>
+#include <linux/ccic/ccic_notifier.h>
 #if defined(CONFIG_USB_TYPEC_MANAGER_NOTIFIER)
 #include <linux/usb/manager/usb_typec_manager_notifier.h>
 #include <linux/notifier.h>
@@ -594,14 +595,15 @@ struct displayport_device {
 #if defined(CONFIG_USB_TYPEC_MANAGER_NOTIFIER)
 	struct delayed_work notifier_register_work;
 	struct notifier_block dp_typec_nb;
-	ccic_notifier_dp_pinconf_t ccic_notify_dp_conf;
 	int notifier_registered;
 	bool ccic_link_conf;
-	bool ccic_hpd;
 #endif
 	int hpd_current_state;
 	enum hotplug_state hpd_state;
 	struct wake_lock dp_wake_lock;
+	/* Retain the hardware state fields used by the 8895 register layer. */
+	ccic_notifier_dp_pinconf_t ccic_notify_dp_conf;
+	bool ccic_hpd;
 	int dp_sw_sel;
 	int gpio_sw_oe;
 	int gpio_sw_sel;

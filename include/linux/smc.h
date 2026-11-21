@@ -167,6 +167,16 @@
 #define PROT_G3D			(12)
 #define PROT_JPEG			(13)
 
+#ifdef CONFIG_SOC_EXYNOS8895
+/* Exynos8895 DPU secure DMA protection IDs. */
+#define PROT_G0			(3)
+#define PROT_G1			(4)
+#define PROT_VG0			(5)
+#define PROT_VG1			(6)
+#define PROT_VGR0			(9)
+#define PROT_VGR1			(10)
+#endif
+
 #ifndef __ASSEMBLY__
 /* secure SysMMU SFR access */
 enum sec_sysmmu_sfr_access_t {
