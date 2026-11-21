@@ -24,6 +24,7 @@
 
 #define pr_fmt(fmt)	"[drm-dp] %s: " fmt, __func__
 
+#include <linux/sched/signal.h>
 #include <linux/device.h>
 #include <linux/fs.h>
 #include <linux/slab.h>
