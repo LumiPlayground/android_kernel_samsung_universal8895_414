@@ -24,7 +24,7 @@ jobs:
           grep -q '^CONFIG_EXYNOS_DECON_8895=y$' out/.config
           grep -q '^CONFIG_EXYNOS_DECON_LCD_S6E3HA6=y$' out/.config
           make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- HOSTCFLAGS='-O2 -fcommon' prepare scripts 2>&1 | tee artifacts/prepare.log
-          make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- HOSTCFLAGS='-O2 -fcommon' KCFLAGS='-Wno-error' -j2 drivers/switch/ drivers/video/fbdev/exynos/ 2>&1 | tee artifacts/build.log
+          make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- HOSTCFLAGS='-O2 -fcommon' KCFLAGS='-Wno-error' -k -j2 drivers/switch/ drivers/video/fbdev/exynos/ 2>&1 | tee artifacts/build.log
       - name: Preserve build evidence
         if: always()
         uses: actions/upload-artifact@v4
