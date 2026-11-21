@@ -13,3 +13,8 @@ return stubs may be substituted for real hardware operations.
 CI builds the selected display objects, not a flashable boot image. Passing
 this compile probe alone does not prove linked-kernel or hardware operation.
 The previous full Image/DTB baseline remains on experimental/android17-4.14.
+
+First compile probe found missing legacy switch.h plus disabled panel dimming.
+Restore the original generic Android switch-class implementation from the
+pinned 4.4 tree for vendor switch sysfs/uevent compatibility, and select the
+panel's actual AID dimming implementation. No empty switch/fence stubs are added.

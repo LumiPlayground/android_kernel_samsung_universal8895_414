@@ -223,3 +223,5 @@ source "drivers/ccic/Kconfig"
 source "drivers/vision/Kconfig"
 
 endmenu
+
+source "drivers/switch/Kconfig"

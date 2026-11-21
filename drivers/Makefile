@@ -200,3 +200,5 @@ obj-$(CONFIG_USE_CCIC)			+= ccic/
 
 obj-$(CONFIG_VISION_SUPPORT)    += vision/
 
+
+obj-$(CONFIG_SWITCH) += switch/
