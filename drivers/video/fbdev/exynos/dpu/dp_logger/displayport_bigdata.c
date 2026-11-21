@@ -74,8 +74,7 @@ static ssize_t secdp_bigdata_store(struct class *dev,
 	return size;
 }
 
-static CLASS_ATTR(dp_error_info, 0664, secdp_bigdata_show,
-				secdp_bigdata_store);
+static struct class_attribute class_attr_dp_error_info = __ATTR(dp_error_info, 0664, secdp_bigdata_show, secdp_bigdata_store);
 
 void secdp_bigdata_init(struct class *dp_class)
 {
