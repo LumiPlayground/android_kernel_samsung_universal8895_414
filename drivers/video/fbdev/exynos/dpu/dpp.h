@@ -12,6 +12,7 @@
 #ifndef __SAMSUNG_DPP_H__
 #define __SAMSUNG_DPP_H__
 
+#include <linux/debug-snapshot.h>
 #include <linux/delay.h>
 #include <linux/sched.h>
 #include <linux/spinlock.h>
@@ -98,7 +99,7 @@ extern int dpp_log_level;
 	do {									\
 		if (dpp_log_level >= 3) {					\
 			pr_err(pr_fmt(fmt), ##__VA_ARGS__);			\
-			exynos_ss_printk(fmt, ##__VA_ARGS__);			\
+			dbg_snapshot_printk(fmt, ##__VA_ARGS__);			\
 		}								\
 	} while (0)
 
@@ -106,7 +107,7 @@ extern int dpp_log_level;
 	do {									\
 		if (dpp_log_level >= 4) {					\
 			pr_warn(pr_fmt(fmt), ##__VA_ARGS__);			\
-			exynos_ss_printk(fmt, ##__VA_ARGS__);			\
+			dbg_snapshot_printk(fmt, ##__VA_ARGS__);			\
 		}								\
 	} while (0)
 

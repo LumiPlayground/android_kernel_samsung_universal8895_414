@@ -1,3 +1,7 @@
+/* 8895 uses the existing legacy hardware BTS implementation. */
+#if defined(CONFIG_EXYNOS8895_BTS)
+#include "../../../drivers/bts_legacy/bts-exynos8895.h"
+#else
 /*
  * Copyright (c) 2018 Samsung Electronics Co., Ltd.
  *		http://www.samsung.com
@@ -52,3 +56,5 @@ void bts_pd_sync(unsigned int cal_id, int on);
 #define exynos_bts_scitoken_setting(a) do {} while (0)
 
 #endif /* __EXYNOS_BTS_H_ */
+
+#endif

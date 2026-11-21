@@ -12,6 +12,7 @@
 #ifndef __SAMSUNG_DSIM_H__
 #define __SAMSUNG_DSIM_H__
 
+#include <linux/debug-snapshot.h>
 #include <linux/device.h>
 #include <linux/kernel.h>
 #include <linux/delay.h>
@@ -58,7 +59,7 @@ extern int dsim_log_level;
 	do {									\
 		if (dsim_log_level >= 3) {					\
 			pr_err(pr_fmt(fmt), ##__VA_ARGS__);			\
-			exynos_ss_printk(fmt, ##__VA_ARGS__);			\
+			dbg_snapshot_printk(fmt, ##__VA_ARGS__);			\
 		}								\
 	} while (0)
 
@@ -66,7 +67,7 @@ extern int dsim_log_level;
 	do {									\
 		if (dsim_log_level >= 4) {					\
 			pr_warn(pr_fmt(fmt), ##__VA_ARGS__);			\
-			exynos_ss_printk(fmt, ##__VA_ARGS__);			\
+			dbg_snapshot_printk(fmt, ##__VA_ARGS__);			\
 		}								\
 	} while (0)
 

@@ -12,6 +12,7 @@
 #ifndef _DISPLAYPORT_H_
 #define _DISPLAYPORT_H_
 
+#include <linux/debug-snapshot.h>
 #include <linux/device.h>
 #include <linux/kernel.h>
 #include <linux/delay.h>
@@ -41,7 +42,7 @@ extern int displayport_log_level;
 	do {									\
 		if (displayport_log_level >= 3) {				\
 			pr_err("Displayport: " pr_fmt(fmt), ##__VA_ARGS__);			\
-			exynos_ss_printk(fmt, ##__VA_ARGS__);			\
+			dbg_snapshot_printk(fmt, ##__VA_ARGS__);			\
 			dp_logger_print(fmt, ##__VA_ARGS__);			\
 		}								\
 	} while (0)
@@ -50,7 +51,7 @@ extern int displayport_log_level;
 	do {									\
 		if (displayport_log_level >= 4) {				\
 			pr_warn("Displayport: " pr_fmt(fmt), ##__VA_ARGS__);			\
-			exynos_ss_printk(fmt, ##__VA_ARGS__);			\
+			dbg_snapshot_printk(fmt, ##__VA_ARGS__);			\
 			dp_logger_print(fmt, ##__VA_ARGS__);			\
 		}								\
 	} while (0)

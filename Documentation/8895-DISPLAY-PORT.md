@@ -25,3 +25,7 @@ error propagation, fd installation transfers the file reference, and the
 existing 4.14 timeline implementation supplies actual signaling. Event logs
 store a sequence number instead of an unowned sync-point pointer. These changes
 still need compile, full link, runtime synchronization and memory-lifetime tests.
+
+Route the 8895 public BTS interface to the donor's real bts_legacy backend,
+instead of using the newer SoC BTS structs. Update old exynos_ss_printk
+callers to the donor's debug-snapshot API with its existing configuration guards.

@@ -12,6 +12,7 @@
 #ifndef ___SAMSUNG_DECON_H__
 #define ___SAMSUNG_DECON_H__
 
+#include <linux/debug-snapshot.h>
 #include <linux/fb.h>
 #include <linux/kernel.h>
 #include <linux/clk.h>
@@ -126,7 +127,7 @@ void dpu_debug_printk(const char *function_name, const char *format, ...);
 	do {									\
 		if (decon_log_level >= 3) {					\
 			pr_err(pr_fmt(fmt), ##__VA_ARGS__);			\
-			exynos_ss_printk(fmt, ##__VA_ARGS__);			\
+			dbg_snapshot_printk(fmt, ##__VA_ARGS__);			\
 		}								\
 	} while (0)
 
@@ -134,7 +135,7 @@ void dpu_debug_printk(const char *function_name, const char *format, ...);
 	do {									\
 		if (decon_log_level >= 4) {					\
 			pr_warn(pr_fmt(fmt), ##__VA_ARGS__);			\
-			exynos_ss_printk(fmt, ##__VA_ARGS__);			\
+			dbg_snapshot_printk(fmt, ##__VA_ARGS__);			\
 		}								\
 	} while (0)
 

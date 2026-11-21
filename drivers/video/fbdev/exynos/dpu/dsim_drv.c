@@ -1371,7 +1371,7 @@ static int dsim_enter_ulps(struct dsim_device *dsim)
 
 	DPU_EVENT_START();
 	dsim_dbg("%s +\n", __func__);
-	exynos_ss_printk("%s:state %d: active %d:+\n", __func__,
+	dbg_snapshot_printk("%s:state %d: active %d:+\n", __func__,
 				dsim->state, pm_runtime_active(dsim->dev));
 
 	if (dsim->state != DSIM_STATE_ON) {
@@ -1404,7 +1404,7 @@ static int dsim_enter_ulps(struct dsim_device *dsim)
 	DPU_EVENT_LOG(DPU_EVT_ENTER_ULPS, &dsim->sd, start);
 err:
 	dsim_dbg("%s -\n", __func__);
-	exynos_ss_printk("%s:state %d: active %d:-\n", __func__,
+	dbg_snapshot_printk("%s:state %d: active %d:-\n", __func__,
 				dsim->state, pm_runtime_active(dsim->dev));
 
 	return ret;
@@ -1416,7 +1416,7 @@ static int dsim_exit_ulps(struct dsim_device *dsim)
 
 	DPU_EVENT_START();
 	dsim_dbg("%s +\n", __func__);
-	exynos_ss_printk("%s:state %d: active %d:+\n", __func__,
+	dbg_snapshot_printk("%s:state %d: active %d:+\n", __func__,
 				dsim->state, pm_runtime_active(dsim->dev));
 
 	if (dsim->state != DSIM_STATE_ULPS) {
@@ -1440,7 +1440,7 @@ static int dsim_exit_ulps(struct dsim_device *dsim)
 	DPU_EVENT_LOG(DPU_EVT_EXIT_ULPS, &dsim->sd, start);
 exit_ulps_err:
 	dsim_dbg("%s -\n", __func__);
-	exynos_ss_printk("%s:state %d: active %d:-\n", __func__,
+	dbg_snapshot_printk("%s:state %d: active %d:-\n", __func__,
 				dsim->state, pm_runtime_active(dsim->dev));
 
 	return 0;
