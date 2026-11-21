@@ -651,7 +651,7 @@ struct decon_window_regs {
 #endif
 
 struct decon_dma_buf_data {
-	struct ion_handle		*ion_handle;
+	void				*cpu_addr;
 	struct dma_buf			*dma_buf;
 	struct dma_buf_attachment	*attachment;
 	struct sg_table			*sg_table;
@@ -998,6 +998,7 @@ struct decon_win {
 };
 
 struct dpu_afbc_info {
+	struct dma_buf *buf[2];
 	dma_addr_t dma_addr[2];
 	bool is_afbc[2];
 	void *v_addr[2];
@@ -1182,7 +1183,6 @@ struct decon_device {
 	struct mutex pm_lock;
 	spinlock_t slock;
 
-	struct ion_client *ion_client;
 
 	struct sw_sync_timeline *timeline;
 	int timeline_max;

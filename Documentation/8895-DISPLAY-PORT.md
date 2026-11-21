@@ -29,3 +29,9 @@ still need compile, full link, runtime synchronization and memory-lifetime tests
 Route the 8895 public BTS interface to the donor's real bts_legacy backend,
 instead of using the newer SoC BTS structs. Update old exynos_ss_printk
 callers to the donor's debug-snapshot API with its existing configuration guards.
+
+Display buffer imports now use owned dma_buf references and the existing 4.14
+ION allocator/IOVMM. Framebuffer allocation balances CPU access and vmap error
+cleanup; buffer retirement releases the persistent fb vmap. Diagnostic AFBC
+copies use bounded, temporary CPU mappings instead of retained ION handles.
+Compile/link and runtime DMA/cache/ownership tests are still required.

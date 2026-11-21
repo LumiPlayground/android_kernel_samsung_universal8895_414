@@ -21,8 +21,7 @@
 #include <linux/clk-provider.h>
 #include <linux/console.h>
 #include <linux/dma-buf.h>
-#include <linux/exynos_ion.h>
-#include <linux/ion.h>
+#include <linux/ion_exynos.h>
 #include <linux/highmem.h>
 #include <linux/memblock.h>
 #include <linux/exynos_iovmm.h>
@@ -250,7 +249,7 @@ void decon_dump(struct decon_device *decon, u32 dump_lv)
 	decon_info("[28]=TE_timeout [29]=no_TE [31]=SWR\n");
 
 	for (i = 0; i < decon->dt.max_win; i++) {
-		if (decon->d.dma_buf_data[f_idx][i].ion_handle != NULL) {
+		if (decon->d.dma_buf_data[f_idx][i].dma_buf != NULL) {
 			decon_info("[w%d_buf] sgl:%p dma_addr:0x%x\n", i,
 				decon->d.dma_buf_data[f_idx][i].sg_table->sgl,
 				(u32)decon->d.dma_buf_data[f_idx][i].dma_addr);
@@ -462,8 +461,9 @@ static void decon_free_dma_buf(struct decon_device *decon,
 			DMA_TO_DEVICE);
 
 	dma_buf_detach(dma->dma_buf, dma->attachment);
+	if (dma->cpu_addr)
+		dma_buf_vunmap(dma->dma_buf, dma->cpu_addr);
 	dma_buf_put(dma->dma_buf);
-	ion_free(decon->ion_client, dma->ion_handle);
 	memset(dma, 0, sizeof(struct decon_dma_buf_data));
 }
 
@@ -1202,11 +1202,12 @@ int decon_set_vsync_int(struct fb_info *info, bool active)
 	return 0;
 }
 
-static unsigned int decon_map_ion_handle(struct decon_device *decon,
+static unsigned int decon_map_dma_buf(struct decon_device *decon,
 		struct device *dev, struct decon_dma_buf_data *dma,
-		struct ion_handle *ion_handle, struct dma_buf *buf, int win_no)
+		struct dma_buf *buf, int win_no)
 {
 	dma->fence = NULL;
+	dma->cpu_addr = NULL;
 	dma->dma_buf = buf;
 
 	dma->attachment = dma_buf_attach(dma->dma_buf, dev);
@@ -1232,10 +1233,7 @@ static unsigned int decon_map_ion_handle(struct decon_device *decon,
 		goto err_iovmm_map;
 	}
 
-	exynos_ion_sync_dmabuf_for_device(dev, dma->dma_buf,
-		dma->dma_buf->size, DMA_TO_DEVICE);
-
-	dma->ion_handle = ion_handle;
+	/* dma_buf_map_attachment performs the device-side DMA mapping/sync. */
 
 	return dma->dma_buf->size;
 
@@ -1252,7 +1250,6 @@ static int decon_import_buffer(struct decon_device *decon, int idx,
 		struct decon_win_config *config,
 		struct decon_reg_data *regs)
 {
-	struct ion_handle *handle;
 	struct dma_buf *buf;
 	struct decon_dma_buf_data dma_buf_data[MAX_PLANE_CNT];
 	struct dpp_device *dpp;
@@ -1265,24 +1262,17 @@ static int decon_import_buffer(struct decon_device *decon, int idx,
 
 	regs->plane_cnt[idx] = dpu_get_plane_cnt(config->format);
 	for (i = 0; i < regs->plane_cnt[idx]; ++i) {
-		handle = ion_import_dma_buf(decon->ion_client, config->fd_idma[i]);
-		if (IS_ERR(handle)) {
-			decon_err("failed to import fd:%d\n", config->fd_idma[i]);
-			ret = PTR_ERR(handle);
-			goto fail;
-		}
-
 		buf = dma_buf_get(config->fd_idma[i]);
 		if (IS_ERR_OR_NULL(buf)) {
 			decon_err("failed to get dma_buf:%ld\n", PTR_ERR(buf));
 			ret = PTR_ERR(buf);
-			goto fail_buf;
+			goto fail;
 		}
 
 		/* idma_type Should be ODMA_WB */
 		dpp = v4l2_get_subdevdata(decon->dpp_sd[config->idma_type]);
-		buf_size = decon_map_ion_handle(decon, dpp->dev,
-				&dma_buf_data[i], handle, buf, idx);
+		buf_size = decon_map_dma_buf(decon, dpp->dev,
+				&dma_buf_data[i], buf, idx);
 		if (!buf_size) {
 			decon_err("failed to map buffer\n");
 			ret = -ENOMEM;
@@ -1300,8 +1290,6 @@ static int decon_import_buffer(struct decon_device *decon, int idx,
 
 fail_map:
 	dma_buf_put(buf);
-fail_buf:
-	ion_free(decon->ion_client, handle);
 fail:
 	return ret;
 }
@@ -2067,9 +2055,18 @@ static void decon_save_afbc_info(struct decon_device *decon,
 			decon->d.afbc_info[frm].dma_addr[id] = afbc_info[frm].dma_addr[id];
 			decon->d.afbc_info[frm].sgl[id] = afbc_info[frm].sgl[id];
 
-			if (afbc_info[frm].v_addr[id])
-				memcpy(afbc_buf_data[frm][id],
-						afbc_info[frm].v_addr[id], BUF_DUMP_SIZE);
+			if (afbc_info[frm].buf[id]) {
+				struct dma_buf *buf = afbc_info[frm].buf[id];
+				void *vaddr;
+				if (buf->size < BUF_DUMP_SIZE || dma_buf_begin_cpu_access(buf, DMA_FROM_DEVICE))
+					continue;
+				vaddr = dma_buf_vmap(buf);
+				if (!IS_ERR_OR_NULL(vaddr)) {
+					memcpy(afbc_buf_data[frm][id], vaddr, BUF_DUMP_SIZE);
+					dma_buf_vunmap(buf, vaddr);
+				}
+				dma_buf_end_cpu_access(buf, DMA_FROM_DEVICE);
+			}
 		}
 	}
 }
@@ -2083,14 +2080,11 @@ static void decon_save_afbc_data(struct decon_device *decon, int id_idx,
 	afbc_info->dma_addr[id_idx] = ddbd->dma_addr;
 	if (ddbd->dma_buf)
 		afbc_info->size[id_idx] = ddbd->dma_buf->size;
-	if (decon->ion_client && ddbd->ion_handle)
-		afbc_info->v_addr[id_idx] =
-			ion_map_kernel(decon->ion_client, ddbd->ion_handle);
+	afbc_info->buf[id_idx] = ddbd->dma_buf;
 	if (ddbd->sg_table)
 		afbc_info->sgl[id_idx] = (void *)ddbd->sg_table->sgl;
 
-	decon_dbg("[decon%d] id=%d, client=%p, ion_h=%p\n",
-				decon->id, id_idx, decon->ion_client, ddbd->ion_handle);
+	decon_dbg("[decon%d] id=%d, dmabuf=%p\n", decon->id, id_idx, ddbd->dma_buf);
 }
 
 static void decon_acquire_old_bufs(struct decon_device *decon,
@@ -2125,7 +2119,7 @@ static void decon_acquire_old_bufs(struct decon_device *decon,
 		 * index[1] : previous -- general dpu pipe-line panic issue
 		 */
 		for (f_idx = 0; f_idx < DPU_FRM_CNT; f_idx++) {
-			decon->d.dma_buf_data[f_idx][i].ion_handle = NULL;
+			decon->d.dma_buf_data[f_idx][i].dma_buf = NULL;
 			if (f_idx == 0) {
 				tmp_dbd = &regs->dma_buf_data[i][0];
 				dpp_id = regs->dpp_config[i].idma_type;
@@ -3619,94 +3613,49 @@ static void decon_release_windows(struct decon_win *win)
 
 static int decon_fb_alloc_memory(struct decon_device *decon, struct decon_win *win)
 {
-	struct decon_lcd *lcd_info = decon->lcd_info;
 	struct fb_info *fbi = win->fbinfo;
-	unsigned int real_size, virt_size, size;
-	dma_addr_t map_dma;
-#if defined(CONFIG_ION_EXYNOS)
-	struct ion_handle *handle;
+	struct decon_lcd *lcd = decon->lcd_info;
 	struct dma_buf *buf;
 	struct dpp_device *dpp;
 	void *vaddr;
-	unsigned int ret;
-#endif
+	size_t size = PAGE_ALIGN((size_t)lcd->xres * lcd->yres * 2 * (DEFAULT_BPP / 8));
+	int ret;
 
-	decon_dbg("%s +\n", __func__);
-	dev_info(decon->dev, "allocating memory for display\n");
-
-	real_size = lcd_info->xres * lcd_info->yres;
-	virt_size = lcd_info->xres * (lcd_info->yres * 2);
-
-	dev_info(decon->dev, "real_size=%u (%u.%u), virt_size=%u (%u.%u)\n",
-		real_size, lcd_info->xres, lcd_info->yres,
-		virt_size, lcd_info->xres, lcd_info->yres * 2);
-
-	size = (real_size > virt_size) ? real_size : virt_size;
-	size *= DEFAULT_BPP / 8;
-
-	fbi->fix.smem_len = size;
-	size = PAGE_ALIGN(size);
-
-	dev_info(decon->dev, "want %u bytes for window[%d]\n", size, win->idx);
-
-#if defined(CONFIG_ION_EXYNOS)
-	handle = ion_alloc(decon->ion_client, (size_t)size, 0,
-					EXYNOS_ION_HEAP_SYSTEM_MASK, 0);
-	if (IS_ERR(handle)) {
-		dev_err(decon->dev, "failed to ion_alloc\n");
-		return -ENOMEM;
+	buf = ion_alloc_dmabuf("ion_system_heap", size, 0);
+	if (IS_ERR(buf))
+		return PTR_ERR(buf);
+	ret = dma_buf_begin_cpu_access(buf, DMA_BIDIRECTIONAL);
+	if (ret)
+		goto err_put;
+	vaddr = dma_buf_vmap(buf);
+	if (IS_ERR_OR_NULL(vaddr)) {
+		ret = vaddr ? PTR_ERR(vaddr) : -ENOMEM;
+		dma_buf_end_cpu_access(buf, DMA_BIDIRECTIONAL);
+		goto err_put;
 	}
-
-	buf = ion_share_dma_buf(decon->ion_client, handle);
-	if (IS_ERR_OR_NULL(buf)) {
-		dev_err(decon->dev, "ion_share_dma_buf() failed\n");
-		goto err_share_dma_buf;
+	memset(vaddr, 0, size);
+	ret = dma_buf_end_cpu_access(buf, DMA_BIDIRECTIONAL);
+	if (ret)
+		goto err_vunmap;
+	dpp = v4l2_get_subdevdata(decon->dpp_sd[decon->dt.dft_idma]);
+	if (!decon_map_dma_buf(decon, dpp->dev, &win->dma_buf_data[0], buf, win->idx)) {
+		ret = -ENOMEM;
+		goto err_vunmap;
 	}
-
-	vaddr = ion_map_kernel(decon->ion_client, handle);
-
-	memset(vaddr, 0x00, size);
-
-	fbi->screen_base = vaddr;
-
+	win->dma_buf_data[0].cpu_addr = vaddr;
 	win->dma_buf_data[1].fence = NULL;
 	win->dma_buf_data[2].fence = NULL;
 	win->plane_cnt = 1;
-
-	dpp = v4l2_get_subdevdata(decon->dpp_sd[decon->dt.dft_idma]);
-	ret = decon_map_ion_handle(decon, dpp->dev, &win->dma_buf_data[0],
-			handle, buf, win->idx);
-	if (!ret)
-		goto err_map;
-	map_dma = win->dma_buf_data[0].dma_addr;
-
-	dev_info(decon->dev, "alloated memory\n");
-#else
-	fbi->screen_base = dma_alloc_writecombine(decon->dev, size,
-						  &map_dma, GFP_KERNEL);
-	if (!fbi->screen_base)
-		return -ENOMEM;
-
-	dev_dbg(decon->dev, "mapped %x to %p\n",
-		(unsigned int)map_dma, fbi->screen_base);
-
-	memset(fbi->screen_base, 0x0, size);
-#endif
-	fbi->fix.smem_start = map_dma;
-
-	dev_info(decon->dev, "fb start addr = 0x%x\n", (u32)fbi->fix.smem_start);
-
-	decon_dbg("%s -\n", __func__);
-
+	fbi->screen_base = vaddr;
+	fbi->fix.smem_len = size;
+	fbi->fix.smem_start = win->dma_buf_data[0].dma_addr;
 	return 0;
 
-#ifdef CONFIG_ION_EXYNOS
-err_map:
+err_vunmap:
+	dma_buf_vunmap(buf, vaddr);
+err_put:
 	dma_buf_put(buf);
-err_share_dma_buf:
-	ion_free(decon->ion_client, handle);
-	return -ENOMEM;
-#endif
+	return ret;
 }
 
 static int decon_acquire_window(struct decon_device *decon, int idx)
@@ -3949,16 +3898,7 @@ static int decon_init_resources(struct decon_device *decon,
 	if (ret)
 		goto err;
 
-	decon->ion_client = exynos_ion_client_create(name);
-	if (IS_ERR(decon->ion_client)) {
-		decon_err("failed to ion_client_create\n");
-		ret = PTR_ERR(decon->ion_client);
-		goto err_ion;
-	}
-
 	return 0;
-err_ion:
-	iounmap(decon->res.ss_regs);
 err:
 	return ret;
 }
