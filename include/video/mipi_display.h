@@ -13,6 +13,9 @@
 #ifndef MIPI_DISPLAY_H
 #define MIPI_DISPLAY_H
 
+#define MIPI_DSI_OEM1_WR_SIDE_RAM 0x4c
+#define MIPI_DSI_OEM1_WR_SIDE_RAM2 0x5c
+
 /* MIPI DSI Processor-to-Peripheral transaction types */
 enum {
 	MIPI_DSI_V_SYNC_START				= 0x01,

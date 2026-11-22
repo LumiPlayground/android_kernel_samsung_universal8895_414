@@ -1,0 +1,21 @@
+{
+  "source_commit": "f0ad52a65f01991ee75d171176f4bf965fe52d93",
+  "kernel_version": "4.14.113",
+  "reference_commit": "97369af7bbd66581d3e993fea083f3eed02d3c20",
+  "run": "https://github.com/BasicOS2025/android_kernel_samsung_universal8895_414/actions/runs/44922296159",
+  "Image": "PASS",
+  "device_DTbs": [
+    "dreamlte rev10",
+    "dream2lte rev10",
+    "greatlte rev06"
+  ],
+  "FDT_and_ARM64_headers": "PASS",
+  "SHA256": "PASS",
+  "effective_config_checks": {
+    "config_checks": 26,
+    "mismatches": {},
+    "hardware_boot_verified": false
+  },
+  "remaining": "Full 8895 DECON/panel, audio, camera, modem/Wi-Fi and vendor ABI/runtime validation; newer BPF APIs, BinderFS/PSI assessment; no Android17 boot proof",
+  "flashable_ROM": false
+}

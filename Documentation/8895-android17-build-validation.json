@@ -1,0 +1,18 @@
+{
+  "source_commit": "c8c170a4920b7f1dd3f2b83dff44178d4aca590b",
+  "kernel_version": "4.14.113",
+  "run": "https://github.com/BasicOS2025/android_kernel_samsung_universal8895_414/actions/runs/44920952511",
+  "image_build": "PASS",
+  "dtbs": [
+    "dreamlte rev10: PASS",
+    "dream2lte rev10: PASS",
+    "greatlte rev06: PASS"
+  ],
+  "artifact_sha256": "PASS (downloaded artifacts verified)",
+  "effective_config": "Binder devices, BPF/JIT/cgroup, cpusets, seccomp, XZ, swap/ZRAM and pstore enabled",
+  "hardware_boot": "NOT TESTED",
+  "android17_boot": "NOT VERIFIED",
+  "vendor_drivers": "INCOMPLETE: simple framebuffer bring-up configuration; full graphics/audio/camera/network validation pending",
+  "kernelsu_next": "NOT INTEGRATED IN 4.14 TREE",
+  "flashable_package": false
+}

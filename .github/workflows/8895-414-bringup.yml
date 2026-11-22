@@ -1,0 +1,38 @@
+name: Exynos 8895 display port compile probe
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  kernel:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install compiler and build tools
+        run: |
+          sudo timeout 300 apt-get update -qq
+          sudo timeout 300 apt-get install -y bc bison flex libssl-dev libelf-dev gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
+      - name: Build Image and board DTBs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          git rev-parse HEAD > artifacts/source-commit.txt
+          make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- exynos8895_display_414_defconfig 2>&1 | tee artifacts/config.log
+          cp out/.config artifacts/kernel.config
+          grep -q '^CONFIG_EXYNOS_DECON_8895=y$' out/.config
+          grep -q '^CONFIG_EXYNOS_DECON_LCD_S6E3HA6=y$' out/.config
+          make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- HOSTCFLAGS='-O2 -fcommon' prepare scripts 2>&1 | tee artifacts/prepare.log
+          make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- HOSTCFLAGS='-O2 -fcommon' KCFLAGS='-Wno-error' -k -j2 drivers/switch/ drivers/video/fbdev/exynos/ 2>&1 | tee artifacts/display-objects.log
+          make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- HOSTCFLAGS='-O2 -fcommon' KCFLAGS='-Wno-error' -j2 Image dtbs 2>&1 | tee artifacts/build.log
+          cp out/arch/arm64/boot/Image artifacts/
+          find out/arch/arm64/boot/dts/exynos -name 'exynos8895-*eur_open*.dtb' -exec cp {} artifacts/ \;
+          sha256sum artifacts/Image artifacts/*.dtb > artifacts/SHA256SUMS
+      - name: Preserve build evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: exynos8895-4.14-bringup
+          path: artifacts/
+          retention-days: 14
